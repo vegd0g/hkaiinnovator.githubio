@@ -87,6 +87,11 @@
             overflow-x: hidden;
         }
 
+        /* 页面加载中：禁用所有动画 */
+        body:not(.loaded) * {
+            animation: none !important;
+        }
+
         /* 主题切换按钮 — 固定在页面右上角 */
         .theme-toggle {
             position: fixed;
@@ -600,6 +605,16 @@
     </style>
 </head>
 <body class="">
+    <script>
+        // 页面加载完成后启用动画
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                document.body.classList.add('loaded');
+            });
+        } else {
+            document.body.classList.add('loaded');
+        }
+    </script>
     <!-- 主题切换按钮 — 固定在页面右上角 -->
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
 
@@ -774,8 +789,8 @@
                 showSuccess('Verifying, please wait...');
                 setTimeout(() => {
                     showSuccess('✅ Login successful! Redirecting...');
-                    // 带动画跳转到仪表板（示例）
-                    startExitAnimation('dashboard.html'); 
+                    // 带动画跳转到home_page
+                    startExitAnimation('../home page/home_page.html'); 
                 }, 1000);
             }
 
