@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile · HK AI INNOVATOR</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 浅色模式变量 (默认) */
+        :root {
+            --bg-body: linear-gradient(135deg, #f5f5f7 0%, #e8e8ed 100%);
+            --bg-card: rgba(255, 255, 255, 0.85);
+            --text-primary: #1d1d1f;
+            --text-secondary: #86868b;
+            --text-link: #0071e3;
+            --text-link-hover: #005fc4;
+            --bg-input: rgba(242, 242, 247, 0.85);
+            --bg-input-hover: rgba(232, 232, 237, 0.9);
+            --placeholder: #a1a1a8;
+            --btn-primary: #0071e3;
+            --btn-primary-hover: #0077ed;
+            --btn-primary-active: #005fc4;
+            --shadow-card: 0 40px 80px rgba(0, 0, 0, 0.08), 0 15px 35px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* 深色模式变量 */
+        body.dark {
+            --bg-body: linear-gradient(135deg, #202024 0%, #2a2a2e 100%);
+            --bg-card: rgba(45, 45, 47, 0.9);
+            --text-primary: #f5f5f7;
+            --text-secondary: #a1a1a8;
+            --text-link: #66b0ff;
+            --text-link-hover: #99c4ff;
+            --bg-input: rgba(32, 32, 38, 0.95);
+            --bg-input-hover: rgba(45, 45, 55, 0.98);
+            --placeholder: #6e6e73;
+            --btn-primary: #66b0ff;
+            --btn-primary-hover: #99c4ff;
+            --btn-primary-active: #3385ff;
+            --shadow-card: 0 40px 80px rgba(0, 0, 0, 0.5), 0 15px 35px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-body);
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            line-height: 1.4;
+            color: var(--text-primary);
+            transition: background 0.5s var(--ease-smooth), color 0.3s ease;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 页面加载中：禁用所有动画 */
+        body:not(.loaded) * {
+            animation: none !important;
+        }
+
+        /* 返回按钮 — 固定在页面左上角 */
+        .back-button {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            background: none;
+            border: none;
+            color: var(--text-link);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 0;
+            transition: color 0.25s var(--ease-smooth), transform 0.25s var(--ease-spring);
+            z-index: 1000;
+            display: inline-block;
+        }
+
+        .back-button::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--text-link);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.25s var(--ease-spring);
+        }
+
+        .back-button:hover {
+            color: var(--text-link-hover);
+            transform: translateY(-1px);
+        }
+
+        .back-button:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        /* 主题切换按钮 — 固定在页面右上角 */
+        .theme-toggle {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            transition: background 0.3s var(--ease-smooth), transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s var(--ease-smooth), backdrop-filter 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.6);
+            line-height: 1;
+            z-index: 1000;
+            will-change: transform, background;
+        }
+
+        body.dark .theme-toggle {
+            background: rgba(45, 45, 47, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        body.dark .theme-toggle:hover {
+            background: rgba(45, 45, 47, 0.95);
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.95);
+        }
+
+        /* 弹入动画 */
+        @keyframes containerPopIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.94) translateY(20px);
+                filter: blur(10px);
+            }
+            50% {
+                transform: scale(1.02);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+                filter: blur(0);
+            }
+        }
+
+        /* 巨大的个人资料卡片 */
+        .profile-container {
+            background-color: var(--bg-card);
+            backdrop-filter: blur(20px) saturate(180%);
+            padding: 3rem;
+            border-radius: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: var(--shadow-card);
+            width: 100%;
+            max-width: 600px;
+            transition: background-color 0.4s var(--ease-smooth), box-shadow 0.4s var(--ease-smooth), backdrop-filter 0.4s ease;
+            animation: containerPopIn 0.7s var(--ease-spring);
+            position: relative;
+        }
+
+        body.dark .profile-container {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* 头像容器 */
+        .avatar-section {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: var(--bg-input);
+            border: 3px solid rgba(0, 113, 227, 0.2);
+            box-shadow: 0 8px 24px rgba(0, 113, 227, 0.15);
+            object-fit: cover;
+            transition: all 0.3s var(--ease-smooth);
+        }
+
+        body.dark .avatar {
+            border-color: rgba(102, 176, 255, 0.2);
+            box-shadow: 0 8px 24px rgba(102, 176, 255, 0.15);
+        }
+
+        .avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 32px rgba(0, 113, 227, 0.25);
+        }
+
+        body.dark .avatar:hover {
+            box-shadow: 0 12px 32px rgba(102, 176, 255, 0.25);
+        }
+
+        /* 表单行容器 */
+        .profile-row {
+            display: flex;
+            gap: 1.2rem;
+            margin-bottom: 1.8rem;
+            align-items: center;
+            white-space: nowrap;
+        }
+
+        .profile-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            flex-shrink: 0;
+            white-space: nowrap;
+            width: 140px;
+        }
+
+        .profile-input-wrapper {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+            flex: 1;
+            white-space: nowrap;
+        }
+
+        .profile-input {
+            flex: 1;
+            padding: 0.85rem;
+            background-color: transparent;
+            border: none;
+            border-bottom: 1.5px solid rgba(120, 180, 255, 0.3);
+            border-radius: 0;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            transition: border-color 0.3s var(--ease-smooth);
+            backdrop-filter: none;
+            box-shadow: none;
+        }
+
+        .profile-input::placeholder {
+            color: var(--placeholder);
+        }
+
+        .profile-input:focus {
+            outline: none;
+            border-bottom-color: rgba(0, 113, 227, 0.8);
+        }
+
+        body.dark .profile-input:focus {
+            border-bottom-color: rgba(102, 176, 255, 0.8);
+        }
+
+        .profile-input:read-only {
+            cursor: default;
+        }
+
+        /* 密码显示/隐藏按钮 — 类似login.html的form-links样式 */
+        .password-toggle {
+            background: none;
+            border: none;
+            color: var(--text-link);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0;
+            transition: color 0.25s var(--ease-smooth), transform 0.25s var(--ease-spring);
+            position: relative;
+            user-select: none;
+        }
+
+        .password-toggle::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--text-link);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.25s var(--ease-spring);
+        }
+
+        .password-toggle:hover {
+            color: var(--text-link-hover);
+            transform: translateY(-1px);
+        }
+
+        .password-toggle:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        /* Link按钮 — 类似login.html的form-links样式 */
+        .profile-link-button {
+            background: none;
+            border: none;
+            color: var(--text-link);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0;
+            transition: color 0.25s var(--ease-smooth), transform 0.25s var(--ease-spring);
+            position: relative;
+        }
+
+        .profile-link-button::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--text-link);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.25s var(--ease-spring);
+        }
+
+        .profile-link-button:hover {
+            color: var(--text-link-hover);
+            transform: translateY(-1px);
+        }
+
+        .profile-link-button:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // 页面加载完成后启用动画
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                document.body.classList.add('loaded');
+            });
+        } else {
+            document.body.classList.add('loaded');
+        }
+    </script>
+
+    <!-- 返回按钮 -->
+    <a href="./home_page.html" class="back-button">← Back</a>
+
+    <!-- 主题切换按钮 -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+
+    <div class="profile-container">
+        <!-- 头像部分 -->
+        <div class="avatar-section">
+            <img src="profile_picture.png" alt="User Avatar" class="avatar">
+        </div>
+
+        <!-- Form -->
+        <div class="profile-row">
+            <label class="profile-label">Form</label>
+            <div class="profile-input-wrapper">
+                <input type="text" class="profile-input" value="F5" readonly>
+            </div>
+        </div>
+
+        <!-- Email -->
+        <div class="profile-row">
+            <label class="profile-label">Email</label>
+            <div class="profile-input-wrapper">
+                <input type="email" class="profile-input" value="" readonly>
+            </div>
+        </div>
+
+        <!-- Username -->
+        <div class="profile-row">
+            <label class="profile-label">Username</label>
+            <div class="profile-input-wrapper">
+                <input type="text" class="profile-input" value="Test1" readonly>
+            </div>
+        </div>
+
+        <!-- Password -->
+        <div class="profile-row">
+            <label class="profile-label">Password</label>
+            <div class="profile-input-wrapper">
+                <input type="password" class="profile-input" id="passwordInput" value="12345678" readonly>
+                <button class="password-toggle" id="passwordToggle">Show</button>
+            </div>
+        </div>
+
+        <!-- Target Job Position -->
+        <div class="profile-row">
+            <label class="profile-label">Target Job Position</label>
+            <div class="profile-input-wrapper">
+                <button class="profile-link-button" onclick="window.open('https://www.bilibili.com', '_blank')">Link</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const passwordToggle = document.getElementById('passwordToggle');
+            const passwordInput = document.getElementById('passwordInput');
+            const body = document.body;
+
+            // --- 主题切换 ---
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            if (savedTheme === 'dark') {
+                body.classList.add('dark');
+                themeToggle.textContent = '☀️';
+            } else {
+                body.classList.remove('dark');
+                themeToggle.textContent = '🌙';
+            }
+
+            themeToggle.addEventListener('click', function() {
+                if (body.classList.contains('dark')) {
+                    body.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                    themeToggle.textContent = '🌙';
+                } else {
+                    body.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                    themeToggle.textContent = '☀️';
+                }
+            });
+
+            // --- 密码显示/隐藏切换 ---
+            let isPasswordVisible = false;
+
+            passwordToggle.addEventListener('click', function() {
+                if (isPasswordVisible) {
+                    passwordInput.type = 'password';
+                    passwordToggle.textContent = 'Show';
+                    isPasswordVisible = false;
+                } else {
+                    passwordInput.type = 'text';
+                    passwordToggle.textContent = 'Hide';
+                    isPasswordVisible = true;
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

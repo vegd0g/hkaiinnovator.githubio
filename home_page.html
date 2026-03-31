@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home · HK AI INNOVATOR</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 浅色模式变量 (默认) */
+        :root {
+            --bg-body: linear-gradient(135deg, #f5f5f7 0%, #e8e8ed 100%);
+            --bg-card: rgba(255, 255, 255, 0.85);
+            --text-primary: #1d1d1f;
+            --text-secondary: #86868b;
+            --text-link: #0071e3;
+            --text-link-hover: #005fc4;
+            --bg-input: rgba(242, 242, 247, 0.85);
+            --btn-primary: #0071e3;
+            --btn-primary-hover: #0077ed;
+            --shadow-card: 0 40px 80px rgba(0, 0, 0, 0.08), 0 15px 35px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* 深色模式变量 */
+        body.dark {
+            --bg-body: linear-gradient(135deg, #202024 0%, #2a2a2e 100%);
+            --bg-card: rgba(45, 45, 47, 0.9);
+            --text-primary: #f5f5f7;
+            --text-secondary: #a1a1a8;
+            --text-link: #66b0ff;
+            --text-link-hover: #99c4ff;
+            --bg-input: rgba(32, 32, 38, 0.95);
+            --btn-primary: #66b0ff;
+            --btn-primary-hover: #99c4ff;
+            --shadow-card: 0 40px 80px rgba(0, 0, 0, 0.5), 0 15px 35px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-body);
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            line-height: 1.4;
+            color: var(--text-primary);
+            transition: background 0.5s var(--ease-smooth), color 0.3s ease;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body:not(.loaded) * {
+            animation: none !important;
+        }
+
+        /* 主题切换按钮 */
+        .theme-toggle {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            transition: background 0.3s var(--ease-smooth), transform 0.15s var(--ease-spring), box-shadow 0.3s var(--ease-smooth);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.6);
+            line-height: 1;
+            z-index: 1000;
+        }
+
+        body.dark .theme-toggle {
+            background: rgba(45, 45, 47, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.8);
+        }
+
+        body.dark .theme-toggle:hover {
+            background: rgba(60, 60, 62, 0.9);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.15);
+        }
+
+        /* 弹入动画 */
+        @keyframes containerPopIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.94) translateY(20px);
+                filter: blur(10px);
+            }
+            50% {
+                transform: scale(1.02);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+                filter: blur(0);
+            }
+        }
+
+        /* 主容器卡片 */
+        .home-container {
+            background-color: var(--bg-card);
+            backdrop-filter: blur(20px) saturate(180%);
+            padding: 3rem 2.5rem;
+            border-radius: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: var(--shadow-card);
+            width: 100%;
+            max-width: 500px;
+            transition: background-color 0.4s var(--ease-smooth), box-shadow 0.4s var(--ease-smooth), opacity 0.5s var(--ease-smooth), transform 0.6s var(--ease-spring);
+            animation: containerPopIn 0.7s var(--ease-spring);
+            position: relative;
+        }
+
+        body.dark .home-container {
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .home-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
+            border-radius: 32px;
+            pointer-events: none;
+        }
+
+        /* 欢迎标题 */
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .welcome-section h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-section p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 400;
+        }
+
+        /* 按钮组 */
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .profile-button {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, var(--btn-primary) 0%, var(--btn-primary-hover) 100%);
+            color: white;
+            border: none;
+            border-radius: 40px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s var(--ease-smooth), transform 0.3s var(--ease-spring), box-shadow 0.3s var(--ease-smooth);
+            box-shadow: 0 8px 24px rgba(0, 113, 227, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
+            border-radius: 40px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .profile-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(0, 113, 227, 0.35);
+        }
+
+        .profile-button:hover::before {
+            opacity: 1;
+        }
+
+        .profile-button:active {
+            box-shadow: 0 4px 12px rgba(0, 113, 227, 0.2);
+        }
+
+        body.dark .profile-button {
+            box-shadow: 0 8px 24px rgba(102, 176, 255, 0.3);
+        }
+
+        body.dark .profile-button:hover {
+            box-shadow: 0 12px 32px rgba(102, 176, 255, 0.4);
+        }
+
+        /* 页面退出动画 */
+        .home-container.page-exit {
+            opacity: 0;
+            transform: scale(0.96) translateY(-20px);
+            filter: blur(8px);
+            pointer-events: none;
+        }
+
+        @media (max-width: 480px) {
+            .home-container {
+                padding: 2rem 1.5rem;
+                border-radius: 24px;
+            }
+            .theme-toggle {
+                top: 16px;
+                right: 16px;
+                width: 44px;
+                height: 44px;
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body class="">
+    <script>
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                document.body.classList.add('loaded');
+            });
+        } else {
+            document.body.classList.add('loaded');
+        }
+    </script>
+
+    <!-- 主题切换按钮 -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+
+    <div class="home-container" id="homeContainer">
+        <div class="welcome-section">
+            <h1>Welcome</h1>
+            <p>HK AI INNOVATOR</p>
+        </div>
+
+        <div class="button-group">
+            <button class="profile-button" id="profileButton">Profile</button>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const profileButton = document.getElementById('profileButton');
+            const homeContainer = document.getElementById('homeContainer');
+            const body = document.body;
+            let isAnimating = false;
+
+            // 主题切换功能
+            body.classList.remove('dark');
+            themeToggle.textContent = '🌙';
+            
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                body.classList.add('dark');
+                themeToggle.textContent = '☀️';
+            }
+
+            themeToggle.addEventListener('click', () => {
+                if (body.classList.contains('dark')) {
+                    body.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                    themeToggle.textContent = '🌙';
+                } else {
+                    body.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                    themeToggle.textContent = '☀️';
+                }
+            });
+
+            // 页面跳转动画函数
+            function startExitAnimation(url) {
+                if (isAnimating) return;
+                if (!url || url === '#') return;
+
+                isAnimating = true;
+                homeContainer.classList.add('page-exit');
+
+                setTimeout(() => {
+                    window.location.href = url;
+                }, 250);
+            }
+
+            // Profile按钮点击事件
+            profileButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                startExitAnimation('./profile.html');
+            });
+        })();
+    </script>
+</body>
+</html>
