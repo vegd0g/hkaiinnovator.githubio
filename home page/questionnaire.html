@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>34-Point Future Scan | Questionnaire</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 浅色模式变量 (默认) */
+        :root {
+            --bg-body: linear-gradient(135deg, #f5f5f7 0%, #e8e8ed 100%);
+            --bg-card: rgba(255, 255, 255, 0.85);
+            --text-primary: #1d1d1f;
+            --text-secondary: #86868b;
+            --text-link: #0071e3;
+            --text-link-hover: #005fc4;
+            --btn-primary: #0071e3;
+            --btn-primary-hover: #0077ed;
+            --shadow-card: 0 40px 80px rgba(0, 0, 0, 0.08), 0 15px 35px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* 深色模式变量 */
+        body.dark {
+            --bg-body: linear-gradient(135deg, #202024 0%, #2a2a2e 100%);
+            --bg-card: rgba(45, 45, 47, 0.9);
+            --text-primary: #f5f5f7;
+            --text-secondary: #a1a1a8;
+            --text-link: #66b0ff;
+            --text-link-hover: #99c4ff;
+            --btn-primary: #66b0ff;
+            --btn-primary-hover: #99c4ff;
+            --shadow-card: 0 40px 80px rgba(0, 0, 0, 0.5), 0 15px 35px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-body);
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 1.5rem;
+            line-height: 1.4;
+            color: var(--text-primary);
+            transition: background 0.5s var(--ease-smooth), color 0.3s ease;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body:not(.loaded) * {
+            animation: none !important;
+        }
+
+        /* 主题切换按钮 */
+        .theme-toggle {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            transition: background 0.3s var(--ease-smooth), transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s var(--ease-smooth), backdrop-filter 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.6);
+            line-height: 1;
+            z-index: 1000;
+            will-change: transform, background;
+        }
+
+        body.dark .theme-toggle {
+            background: rgba(45, 45, 47, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        body.dark .theme-toggle:hover {
+            background: rgba(45, 45, 47, 0.95);
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.95);
+        }
+
+        /* Skip按钮 */
+        .skip-button {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            background: none;
+            border: none;
+            color: var(--text-link);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 0;
+            transition: color 0.25s var(--ease-smooth), transform 0.25s var(--ease-spring);
+            z-index: 1000;
+            display: inline-block;
+        }
+
+        .skip-button::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--text-link);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.25s var(--ease-spring);
+        }
+
+        .skip-button:hover {
+            color: var(--text-link-hover);
+            transform: translateY(-1px);
+        }
+
+        .skip-button:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 120px;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: -4px 0 16px rgba(0, 0, 0, 0.08);
+            padding: 1.5rem 0.8rem;
+            transform: translateX(-100%);
+            transition: transform 0.4s var(--ease-spring);
+            z-index: 500;
+            overflow-y: auto;
+            clip-path: inset(0 0 0 0);
+        }
+
+        body.dark .sidebar {
+            background: rgba(45, 45, 47, 0.9);
+            box-shadow: 4px 0 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .sidebar.open {
+            transform: translateX(-120px);
+        }
+
+        /* 侧边栏关闭按钮 */
+        .sidebar-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: transform 0.2s var(--ease-spring);
+            padding: 0;
+        }
+
+        .sidebar-close:hover {
+            transform: scale(1.1);
+        }
+
+        /* 侧边栏菜单项 */
+        .sidebar-menu {
+            margin-top: 4rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .menu-item {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(0, 0, 0, 0.12);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 8px;
+            font-size: 1.15rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s var(--ease-smooth), color 0.3s var(--ease-smooth);
+            position: relative;
+            overflow: hidden;
+            text-align: right;
+        }
+
+        .menu-item:hover {
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text-primary);
+        }
+
+        body.dark .menu-item {
+            background: rgba(255, 255, 255, 0.26);
+            color: var(--text-primary);
+        }
+
+        body.dark .menu-item:hover {
+            background: rgba(255, 255, 255, 0.38);
+            color: var(--text-primary);
+        }
+
+        /* 遮罩层 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s var(--ease-smooth);
+            z-index: 450;
+        }
+
+        .overlay.show {
+            background: rgba(0, 0, 0, 0.3);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* 问卷容器 */
+        .questionnaire-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+
+        .questionnaire-card {
+            width: 100%;
+            max-width: 900px;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 2.5rem 3rem;
+            box-shadow: var(--shadow-card);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            animation: slideInFromBottom 0.6s var(--ease-spring) forwards;
+        }
+
+        body.dark .questionnaire-card {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* 进度条 */
+        .progress-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-text {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .progress-number {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-link);
+            letter-spacing: 0.05em;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(0, 0, 0, 0.08);
+            border-radius: 4px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        body.dark .progress-bar {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        #progress {
+            height: 100%;
+            background: var(--text-link);
+            border-radius: 4px;
+            transition: width 0.5s var(--ease-smooth);
+        }
+
+        /* 问题卡片 */
+        .q-card {
+            display: none;
+        }
+
+        .q-card.active {
+            display: block;
+            animation: slideIn 0.4s var(--ease-smooth);
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInFromBottom {
+            0% { opacity: 0; transform: translateY(50px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .q-card h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .q-card p {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+
+        .q-card span {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-link);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 0.8rem;
+        }
+
+        /* 输入框和下拉菜单 */
+        input[type="text"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 1.2rem;
+            border: 2px solid rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-family: inherit;
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.5);
+            transition: border-color 0.3s var(--ease-smooth), background 0.3s var(--ease-smooth);
+            outline: none;
+        }
+
+        body.dark input[type="text"],
+        body.dark select,
+        body.dark textarea {
+            background: rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        input[type="text"]:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--text-link);
+            background: var(--bg-card);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-weight: 600;
+        }
+
+        /* 单选按钮和标签 */
+        .grid {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        label {
+            padding: 1.2rem;
+            border: 2px solid rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.5);
+            transition: all 0.2s var(--ease-smooth);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        body.dark label {
+            background: rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        label:hover {
+            border-color: var(--text-link);
+            background: rgba(0, 113, 227, 0.05);
+        }
+
+        body.dark label:hover {
+            background: rgba(102, 176, 255, 0.05);
+        }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        input[type="checkbox"] {
+            display: none;
+        }
+
+        input[type="radio"]:checked + span {
+            color: var(--text-link);
+            font-weight: 700;
+        }
+
+        input[type="checkbox"]:checked + span {
+            color: var(--text-link);
+            font-weight: 700;
+        }
+
+        label:has(input[type="radio"]:checked) {
+            border-color: var(--text-link);
+            background: rgba(0, 113, 227, 0.08);
+            box-shadow: 0 4px 15px rgba(0, 113, 227, 0.1);
+            transform: translateY(-2px);
+        }
+
+        label:has(input[type="checkbox"]:checked) {
+            border-color: var(--text-link);
+            background: rgba(0, 113, 227, 0.08);
+            box-shadow: 0 4px 15px rgba(0, 113, 227, 0.1);
+            transform: translateY(-2px);
+        }
+
+        body.dark label:has(input[type="radio"]:checked) {
+            background: rgba(102, 176, 255, 0.12);
+            box-shadow: 0 4px 15px rgba(102, 176, 255, 0.15);
+        }
+
+        body.dark label:has(input[type="checkbox"]:checked) {
+            background: rgba(102, 176, 255, 0.12);
+            box-shadow: 0 4px 15px rgba(102, 176, 255, 0.15);
+        }
+
+        label span {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            transition: color 0.2s var(--ease-smooth);
+        }
+
+        /* 按钮 */
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 2.5rem;
+        }
+
+        button[type="button"],
+        button[type="submit"] {
+            padding: 1.2rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s var(--ease-smooth);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        #prevBtn {
+            background: rgba(0, 0, 0, 0.08);
+            color: var(--text-secondary);
+            flex: 0.5;
+        }
+
+        body.dark #prevBtn {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+        }
+
+        #prevBtn:hover {
+            background: rgba(0, 0, 0, 0.15);
+        }
+
+        body.dark #prevBtn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        #nextBtn {
+            background: var(--btn-primary);
+            color: #fff;
+            flex: 1;
+            box-shadow: 0 8px 24px rgba(0, 113, 227, 0.2);
+        }
+
+        #nextBtn:hover {
+            background: var(--btn-primary-hover);
+            box-shadow: 0 12px 32px rgba(0, 113, 227, 0.3);
+            transform: translateY(-2px);
+        }
+
+        #nextBtn:active {
+            transform: scale(0.98);
+        }
+
+        #prevBtn.hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .questionnaire-card {
+                padding: 2rem;
+            }
+
+            .q-card h2 {
+                font-size: 1.5rem;
+            }
+
+            button[type="button"],
+            button[type="submit"] {
+                padding: 1rem 1.5rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* 弹窗样式 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            animation: fadeIn 0.3s var(--ease-smooth);
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: var(--shadow-card);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            text-align: center;
+            animation: slideUp 0.4s var(--ease-spring);
+        }
+
+        body.dark .modal-content {
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .modal-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.2rem;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .modal-content p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .modal-button {
+            background: var(--btn-primary);
+            color: white;
+            border: none;
+            padding: 0.95rem 2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s var(--ease-smooth);
+            box-shadow: 0 8px 24px rgba(0, 113, 227, 0.25);
+        }
+
+        .modal-button:hover {
+            background: var(--btn-primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(0, 113, 227, 0.35);
+        }
+
+        .modal-button:active {
+            transform: scale(0.98);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+        }
+
+        .modal.closing {
+            animation: fadeOut 0.3s var(--ease-smooth) forwards;
+        }
+
+        .modal.closing .modal-content {
+            animation: slideDown 0.3s var(--ease-spring) forwards;
+        }
+    </style>
+</head>
+<body>
+    <!-- 欢迎弹窗 -->
+    <div id="welcomeModal" class="modal">
+        <div class="modal-content">
+            <h3>Welcome! 👋</h3>
+            <p>We need some of your personal information</p>
+            <button class="modal-button" onclick="closeWelcomeModal()">Let's Get Started</button>
+        </div>
+    </div>
+
+    <div class="questionnaire-container">
+        <div class="questionnaire-card">
+            <div class="progress-section">
+                <span class="progress-text">Neural Scan Progress</span>
+                <span class="progress-number" id="progressText">1 / 33</span>
+            </div>
+            <div class="progress-bar">
+                <div id="progress" style="width: 3.03%"></div>
+            </div>
+
+            <form id="auditForm">
+            
+            <div class="q-card active" data-step="1">
+                <span>Part 1: Basic Info</span>
+                <h2>01. What is your name?</h2>
+                <p>Just your first name or a nickname is perfectly fine.</p>
+                <input type="text" name="userName" id="userName" required placeholder="e.g. Alex">
+            </div>
+
+            <div class="q-card" data-step="2">
+                <h2>02. What kind of school system are you in?</h2>
+                <p>Select the education system that best describes your school.</p>
+                <div class="grid">
+                    <label><input type="radio" name="sys" value="HKDSE"> <span>HKDSE (Hong Kong System)</span></label>
+                    <label><input type="radio" name="sys" value="IB"> <span>IB (International Baccalaureate)</span></label>
+                    <label><input type="radio" name="sys" value="ALevel"> <span>A-Level (UK System)</span></label>
+                    <label><input type="radio" name="sys" value="AP"> <span>AP (US System) / Local</span></label>
+                </div>
+            </div>
+
+            <div class="q-card" data-step="3">
+                <h2>03. What is your dream university goal?</h2>
+                <p>Be honest about your university aspirations.</p>
+                <div class="grid">
+                    <label><input type="radio" name="target" value="Tier1"> <span>Global Top 20 (Ivy, Oxbridge, HKU Med/Law)</span></label>
+                    <label><input type="radio" name="target" value="Tier2"> <span>Top 100 Universities (Solid Local or Overseas)</span></label>
+                    <label><input type="radio" name="target" value="Tier3"> <span>Any Good University</span></label>
+                </div>
+            </div>
+
+            <div class="q-card" data-step="4">
+                <span>Part 2: Academics</span>
+                <h2>04. Which SPECIFIC subject gets you the highest marks?</h2>
+                <p>Choose the subject where you consistently score the best.</p>
+                <select name="best">
+                    <option value="">-- Please select --</option>
+                    <option value="Physics">Physics</option>
+                    <option value="Chemistry">Chemistry</option>
+                    <option value="Biology">Biology</option>
+                    <option value="Econ">Economics</option>
+                    <option value="BAFS">BAFS / Business Studies</option>
+                    <option value="ICT">ICT / Computer Science</option>
+                    <option value="English">English Language</option>
+                    <option value="History">History / Chinese History</option>
+                    <option value="Geography">Geography</option>
+                    <option value="VisualArts">Visual Arts / Design</option>
+                </select>
+            </div>
+
+            <div class="q-card" data-step="5">
+                <h2>05. Which SPECIFIC subject do you ACTUALLY love?</h2>
+                <p>Regardless of grades, which subject truly interests you?</p>
+                <select name="passion">
+                    <option value="">-- Please select --</option>
+                    <option value="Physics">Physics</option>
+                    <option value="Chemistry">Chemistry</option>
+                    <option value="Biology">Biology</option>
+                    <option value="Econ">Economics</option>
+                    <option value="BAFS">BAFS / Business Studies</option>
+                    <option value="ICT">ICT / Computer Science</option>
+                    <option value="English">English Language</option>
+                    <option value="History">History / Chinese History</option>
+                    <option value="Geography">Geography</option>
+                    <option value="VisualArts">Visual Arts / Design</option>
+                </select>
+            </div>
+
+            <div class="q-card" data-step="6">
+                <h2>06. Which grade are you studying at now?</h2>
+                <p>Select your current academic grade level.</p>
+                <select name="grade">
+                    <option value="">-- Please select --</option>
+                    <option value="F2">Form 2 / Grade 8</option>
+                    <option value="F3">Form 3 / Grade 9</option>
+                    <option value="F4">Form 4 / Grade 10</option>
+                    <option value="F5">Form 5 / Grade 11</option>
+                    <option value="F6">Form 6 / Grade 12</option>
+                </select>
+            </div>
+
+            <div class="q-card" data-step="7">
+                <h2>Which education system / curriculum are you currently following?</h2>
+                <p>Identify the curriculum framework used in your school.</p>
+                <select name="curriculum">
+                    <option value="">-- Please select --</option>
+                    <option value="Alevel">GCE A-Level</option>
+                    <option value="IB">International Baccalaureate (IB)</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="q-card" data-step="8">
+                <h2>08. What are your elective subjects?</h2>
+                <p>Select all elective subjects you are taking or have taken.</p>
+                <div class="grid">
+                    <label><input type="checkbox" name="elective3" value="Physics"><span>Physics</span></label>
+                    <label><input type="checkbox" name="elective3" value="Chemistry"><span>Chemistry</span></label>
+                    <label><input type="checkbox" name="elective3" value="Biology"><span>Biology</span></label>
+                    <label><input type="checkbox" name="elective3" value="Econ"><span>Economics</span></label>
+                    <label><input type="checkbox" name="elective3" value="BAFS"><span>BAFS</span></label>
+                    <label><input type="checkbox" name="elective3" value="ICT"><span>Information and Communication Technology</span></label>
+                    <label><input type="checkbox" name="elective3" value="History"><span>History / Chinese History</span></label>
+                    <label><input type="checkbox" name="elective3" value="Geography"><span>Geography</span></label>
+                    <label><input type="checkbox" name="elective3" value="ERS"><span>Ethics and Religious Studies</span></label>
+                    <label><input type="checkbox" name="elective3" value="Tourism"><span>Tourism and Hospitality Studies</span></label>
+                    <label><input type="checkbox" name="elective3" value="Design"><span>Design and Applied Technology</span></label>
+                    <label><input type="checkbox" name="elective3" value="Health"><span>Health Management and Social Care</span></label>
+                    <label><input type="checkbox" name="elective3" value="Technology"><span>Technology and Living</span></label>
+                    <label><input type="checkbox" name="elective3" value="Music"><span>Music</span></label>
+                    <label><input type="checkbox" name="elective3" value="VisualArts"><span>Visual Arts</span></label>
+                    <label><input type="checkbox" name="elective3" value="PE"><span>Physical Education</span></label>
+                    <label><input type="checkbox" name="elective3" value="M1"><span>Mathematics Extended Part — Module 1</span></label>
+                    <label><input type="checkbox" name="elective3" value="M2"><span>Mathematics Extended Part — Module 2</span></label>
+                </div>
+            </div>
+
+            <div class="q-card" data-step="9">
+                <h2>09. What grades do you normally get?</h2>
+                <p>Choose the grade range that best represents your typical performance.</p>
+                <div class="grid">
+                    <label><input type="radio" name="grades" value="Perfect"><span>Mostly 5** / A* / Perfect Scores</span></label>
+                    <label><input type="radio" name="grades" value="Good"><span>Mostly 4 to 5 / A and B (Very Good)</span></label>
+                    <label><input type="radio" name="grades" value="Average"><span>Mostly 3 / C (Average)</span></label>
+                    <label><input type="radio" name="grades" value="Bad"><span>Struggling to pass (Level 1-2 / D-F)</span></label>
+                </div>
+            </div>
+
+            <div class="q-card" data-step="10">
+                <span>Part 3: Habits</span>
+                <h2>10. How many hours do you study after school?</h2>
+                <p>Be honest about your daily study time outside of school.</p>
+                <div class="grid">
+                    <label><input type="radio" name="hours" value="6+"><span>5 to 8+ Hours (I am a machine)</span></label>
+                    <label><input type="radio" name="hours" value="3-5"><span>3 to 5 Hours (I work hard but need rest)</span></label>
+                    <label><input type="radio" name="hours" value="1-2"><span>1 to 2 Hours (I do the minimum)</span></label>
+                    <label><input type="radio" name="hours" value="0"><span>0 Hours (I never study at home)</span></label>
+                </div>
+            </div>
+
+            <div class="q-card" data-step="11">
+                <h2>11. How good is your English?</h2>
+                <p>Assess your English language proficiency level.</p>
+                <div class="grid">
+                    <label><input type="radio" name="english" value="Native"><span>Native or totally fluent.</span></label>
+                    <label><input type="radio" name="english" value="Good"><span>Good enough to watch movies without subtitles.</span></label>
+                    <label><input type="radio" name="english" value="Basic"><span>Basic. Reading long text is hard.</span></label>
+                </div>
+            </div>
+
+            <div class="q-card" data-step="12">
+                <h2>12. How do you feel about Mathematics?</h2>
+                <p>Reflect on your relationship with math: love it, neutral, or struggle with it?</p>
+                <div class="grid">
+                    <label><input type="radio" name="math" value="Love"><span>I love it. Numbers make sense to me.</span></label>
+                    <label><input type="radio" name="math" value="Okay"><span>It's okay. I can do it if I memorize formulas.</span></label>
+                    <label><input type="radio" name="math" value="Hate"><span>I hate it. My brain hurts looking at math.</span></label>
+                </div>
+            </div>
+
+            <div class="q-card" data-step="13">
+                <h2>13. Are you good with Computers?</h2>
+                <p>What is your comfort level with computers and technology?</p>
+                <div class="grid">
+                    <label><input type="radio" name="tech" value="Coder"><span>Yes, I can write code (Python/C++).</span></label>
+                    <label><input type="radio" name="tech" value="User"><span>I am good at using software and AI.</span></label>
+                    <label><input type="radio" name="tech" value="Basic"><span>I only know how to type and browse the web.</span></label>
+                </div>
+            </div>
+
+            <div class="q-card" data-step="14">
+                <h2>14. How do you feel about Public Speaking?</h2>
+                <p>Choose the statement that best describes your feelings about public speaking.</p>
+                <div class="grid">
+                    <label><input type="radio" name="speak" value="Love"><span>I love being on stage. Everyone look at me!</span></label>
+                    <label><input type="radio" name="speak" value="Okay"><span>I can do it if I prepare, but I get nervous.</span></label>
+                    <label><input type="radio" name="speak" value="Fear"><span>I am terrified. Please don't make me talk.</span></label>
+                </div>
+            </div>
+
+            <div class="q-card" data-step="15">
+                <h2>15. How do you learn things the fastest?</h2>
+                <p>Identify your preferred learning style and method.</p>
+                <div class="grid">
+                    <label><input type="radio" name="learn" value="Video"><span>Watching YouTube videos.</span></label>
+                    <label><input type="radio" name="learn" value="Read"><span>Reading books and taking notes.</span></label>
+                    <label><input type="radio" name="learn" value="Do"><span>Doing it with my hands (Labs/Building).</span></label>
+                </div>
+            </div>
+
+            <div class="q-card" data-step="16">
+                <h2>16. Do you delay your homework (Procrastinate)?</h2>
+                <p>How often do you procrastinate on your assignments?</p>
+                <div class="grid">
+                    <label><input type="radio" name="delay" value="No"><span>Never. I finish everything immediately.</span></label>
+                    <label><input type="radio" name="delay" value="Sometimes"><span>Sometimes, but I always meet the deadline.</span></label>
+                    <label><input type="radio" name="delay" value="Always"><span>Always. I do everything the night before.</span></label>
+                </div>
+            </div>
+
+            <div class="q-card" data-step="17">
+                <h2>17. How much do you sleep every night?</h2>
+                <p>Select your typical average hours of sleep per night.</p>
+                <div class="grid">
+                    <label><input type="radio" name="sleep" value="8+"><span>8+ hours. I need my rest.</span></label>
+                    <label><input type="radio" name="sleep" value="6-7"><span>6 to 7 hours. Standard.</span></label>
+                    <label><input type="radio" name="sleep" value="5-"><span>Less than 5 hours. I am always tired.</span></label>
+                </div>
+            </div>
+
+            <div class="q-card" data-step="18">
+                <span>Part 4: Psychology</span>
+                <h2>18. When you see a very hard question, you...</h2>
+                <p>How do you typically approach challenging problems?</p>
+                <div class="grid">
+                    <label><input type="radio" name="logic" value="Logic"><span>Break the problem down logically.</span></label>
+                    <label><input type="radio" name="logic" value="Creative"><span>Try to guess a creative answer.</span></label>
+                    <label><input type="radio" name="logic" value="Memory"><span>Try to remember the textbook exactly.</span></label>
+                </div>
+            </div>
+
+            <div class="q-card" data-step="19">
+                <h2>19. In a team project, you are usually...</h2>
+                <p>What is your typical role when working with a group?</p>
+                <div class="grid">
+                    <label><input type="radio" name="role" value="Leader"><span>The Boss. I assign tasks.</span></label>
+                    <label><input type="radio" name="role" value="Worker"><span>The Worker. I do the heavy research.</span></label>
+                    <label><input type="radio" name="role" value="Checker"><span>The Editor. I fix mistakes at the end.</span></label>
+                </div>
+            </div>
+
+            <div class="q-card" data-step="20">
+                <h2>20. How stressed are you feeling right now?</h2>
+                <p>Rate your current stress level honestly.</p>
+                <div class="grid">
+                    <label><input type="radio" name="stress" value="Low"><span>Ice cold. No stress.</span></label>
+                    <label><input type="radio" name="stress" value="Med"><span>Normal. I worry a bit, but I can work.</span></label>
+                    <label><input type="radio" name="stress" value="High"><span>Extremely stressed. Close to burning out.</span></label>
+                </div>
+            </div>
+
+            <div class="q-card" data-step="21">
+                <h2>21. What is your main goal in life?</h2>
+                <p>Select what motivates you most in your life and career.</p>
+                <div class="grid">
+                    <label><input type="radio" name="motive" value="Money"><span>Getting extremely rich ($1M+ per year).</span></label>
+                    <label><input type="radio" name="motive" value="Impact"><span>Changing the world / Creating.</span></label>
+                    <label><input type="radio" name="motive" value="Stability"><span>A safe, stable job for family time.</span></label>
+                </div>
+            </div>
+
+            <div class="q-card" data-step="22">
+                <h2>22. Do you follow the rules?</h2>
+                <p>How strict are you about following rules and guidelines?</p>
+                <div class="grid">
+                    <label><input type="radio" name="rules" value="Follow"><span>Yes. Rules keep us safe.</span></label>
+                    <label><input type="radio" name="rules" value="Break"><span>No. If a rule is slow, I find a way around it.</span></label>
+                </div>
+            </div>
+
+            <div class="q-card" data-step="23">
+                <h2>23. How do you make big choices?</h2>
+                <p>Describe your decision-making style when facing important choices.</p>
+                <div class="grid">
+                    <label><input type="radio" name="decide" value="Fast"><span>Very fast. I trust my gut feeling.</span></label>
+                    <label><input type="radio" name="decide" value="Slow"><span>Slow. I make a pros/cons list.</span></label>
+                </div>
+            </div>
+
+            <div class="q-card" data-step="24">
+                <h2>24. You care more about...</h2>
+                <p>What matters more to you in your work and life?</p>
+                <div class="grid">
+                    <label><input type="radio" name="focus" value="Detail"><span>The small details. Must be perfect.</span></label>
+                    <label><input type="radio" name="focus" value="Big"><span>The big picture. I don't waste time.</span></label>
+                </div>
+            </div>
+
+            <div class="q-card" data-step="25">
+                <h2>25. Using ChatGPT / AI for homework is...</h2>
+                <p>What is your perspective on using AI tools for academic work?</p>
+                <div class="grid">
+                    <label><input type="radio" name="ai" value="Tool"><span>Smart. It saves me hours.</span></label>
+                    <label><input type="radio" name="ai" value="Cheat"><span>Cheating. I should learn myself.</span></label>
+                </div>
+            </div>
+
+            <div class="q-card" data-step="26">
+                <span>Part 5: Your Future</span>
+                <h2>26. Where do you want to work?</h2>
+                <p>Which work environment appeals to you most?</p>
+                <div class="grid">
+                    <label><input type="radio" name="env" value="Office"><span>A fancy glass office (Corporate).</span></label>
+                    <label><input type="radio" name="env" value="Remote"><span>Remote. In my bedroom or a beach.</span></label>
+                    <label><input type="radio" name="env" value="Lab"><span>A science lab or tech workshop.</span></label>
+                </div>
+            </div>
+
+            <div class="q-card" data-step="27">
+                <h2>27. Meeting strangers at a party is...</h2>
+                <p>How do you feel about social interaction with new people?</p>
+                <div class="grid">
+                    <label><input type="radio" name="social" value="Extro"><span>Fun. I love talking.</span></label>
+                    <label><input type="radio" name="social" value="Intro"><span>Exhausting. I want to go home.</span></label>
+                </div>
+            </div>
+
+            <div class="q-card" data-step="28">
+                <h2>28. Are you a risk-taker?</h2>
+                <p>How comfortable are you with taking risks and uncertainty?</p>
+                <div class="grid">
+                    <label><input type="radio" name="risk" value="High"><span>Yes. High risk, high reward.</span></label>
+                    <label><input type="radio" name="risk" value="Low"><span>No. I like things predictable.</span></label>
+                </div>
+            </div>
+
+            <div class="q-card" data-step="29">
+                <h2>29. What are your dream job types?</h2>
+                <p>Choose the career field that excites you most.</p>
+                <select name="dreamType">
+                    <option value="">-- Please select --</option>
+                    <option value="Arch">Architecture and Construction</option>
+                    <option value="Biz">Business Management and Administration</option>
+                    <option value="Health">Health Science</option>
+                    <option value="IT">Information Technology</option>
+                    <option value="Law">Law and Public Safety</option>
+                    <option value="Retail">Retail, Sales and Customer Service</option>
+                    <option value="Tourism">Hospitality and Tourism</option>
+                    <option value="Trans">Transportation and Logistics</option>
+                    <option value="Manu">Manufacturing and Engineering</option>
+                    <option value="Arts">Arts, Design and Media</option>
+                </select>
+            </div>
+
+            <div class="q-card" data-step="30">
+                <h2>30. What do you do for fun?</h2>
+                <p>What activities do you enjoy most in your free time?</p>
+                <div class="grid">
+                    <label><input type="radio" name="hobby" value="Games"><span>Video games / Movies.</span></label>
+                    <label><input type="radio" name="hobby" value="Sports"><span>Sports / Gym.</span></label>
+                    <label><input type="radio" name="hobby" value="Create"><span>Drawing / Music / Coding.</span></label>
+                </div>
+            </div>
+
+            <div class="q-card" data-step="31">
+                <h2>31. If someone gives you $10,000 today, you will...</h2>
+                <p>How would you handle a sudden financial windfall?</p>
+                <div class="grid">
+                    <label><input type="radio" name="spend" value="Save"><span>Save it in the bank.</span></label>
+                    <label><input type="radio" name="spend" value="Invest"><span>Invest it in stocks/crypto.</span></label>
+                    <label><input type="radio" name="spend" value="Spend"><span>Buy a new PC or travel.</span></label>
+                </div>
+            </div>
+
+            <div class="q-card" data-step="32">
+                <h2>32. Which job category sounds coolest to you?</h2>
+                <p>Select the industry or field that interests you the most.</p>
+                <select name="direction">
+                    <option value="">-- Please select --</option>
+                    <option value="Arch">Architecture and Construction</option>
+                    <option value="Biz">Business Management and Administration</option>
+                    <option value="Edu">Education and Learning</option>
+                    <option value="Health">Health Science</option>
+                    <option value="Tech">Information Technology</option>
+                    <option value="Law">Law and Public Safety</option>
+                    <option value="Ret">Retail, Sales and Customer Service</option>
+                    <option value="Hos">Hospitality and Tourism</option>
+                    <option value="Trans">Transportation and Logistics</option>
+                    <option value="Man">Manufacturing and Engineering</option>
+                    <option value="Art">Arts, Design and Media</option>
+                </select>
+            </div>
+
+            <div class="q-card" data-step="33">
+                <span>Part 6: The Ultimate Goal</span>
+                <h2>33. What is your exact dream job?</h2>
+                <p>Type it here. Don't be shy. If you want to be "CEO of Apple", "Investment Banker", or "A YouTuber making millions", write it down.</p>
+                <textarea name="dreamJob" placeholder="I want to be..."></textarea>
+            </div>
+
+            <div class="button-group">
+                <button type="button" id="prevBtn" class="hidden">← Back</button>
+                <button type="button" id="nextBtn">Next Question →</button>
+            </div>
+        </form>
+        </div>
+    </div>
+
+    <!-- 主题切换按钮 -->
+    <button class="theme-toggle" id="themeToggle">🌙</button>
+
+    <!-- Skip按钮 -->
+    <button class="skip-button" id="skipBtn">skip</button>
+
+    <!-- 遮罩层 -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- 侧边栏菜单 -->
+    <div class="sidebar" id="sidebar">
+        <button class="sidebar-close" id="sidebarClose">✕</button>
+        <div class="sidebar-menu">
+            <button class="menu-item" id="homePageBtn">Home Page</button>
+            <button class="menu-item" id="profileMenuBtn">Profile</button>
+            <button class="menu-item" id="jobMenuBtn">Job Category</button>
+        </div>
+    </div>
+
+    <script>
+        // 主题切换
+        const themeToggle = document.getElementById('themeToggle');
+        const htmlElement = document.documentElement;
+
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark');
+            themeToggle.innerText = '☀️';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+            const isDark = document.body.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            themeToggle.innerText = isDark ? '☀️' : '🌙';
+        });
+
+        // 侧边栏控制
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const sidebarClose = document.getElementById('sidebarClose');
+
+        sidebarClose.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('show');
+        });
+
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('show');
+        });
+
+        // 导航菜单按钮
+        const homePageBtn = document.getElementById('homePageBtn');
+        const profileMenuBtn = document.getElementById('profileMenuBtn');
+        const jobMenuBtn = document.getElementById('jobMenuBtn');
+
+        homePageBtn.addEventListener('click', () => {
+            window.location.href = 'home_page.html';
+        });
+
+        profileMenuBtn.addEventListener('click', () => {
+            window.location.href = 'profile.html';
+        });
+
+        jobMenuBtn.addEventListener('click', () => {
+            window.location.href = 'job.html';
+        });
+
+        // Skip按钮点击事件
+        const skipBtn = document.getElementById('skipBtn');
+        if (skipBtn) {
+            skipBtn.addEventListener('click', function() {
+                // 需要是否确认：是否真的要跳过？
+                if (confirm('是否要跳过问卷？')) {
+                    window.location.href = 'home_page.html';
+                }
+            });
+        }
+
+        // 问卷逻辑
+        let currentStep = 1;
+        const totalSteps = 33;
+        const nextBtn = document.getElementById('nextBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const progress = document.getElementById('progress');
+        const progressText = document.getElementById('progressText');
+
+        // 验证当前题是否被回答
+        function isCurrentStepAnswered() {
+            const currentCard = document.querySelector(`[data-step="${currentStep}"]`);
+            if (!currentCard) return true;
+            
+            // 对于第33题，不需要验证
+            if (currentStep === totalSteps) return true;
+            
+            // 检查text输入
+            const textInputs = currentCard.querySelectorAll('input[type="text"]');
+            for (let input of textInputs) {
+                if (!input.value.trim()) return false;
+            }
+            
+            // 检查radio
+            const radios = currentCard.querySelectorAll('input[type="radio"]');
+            if (radios.length > 0) {
+                const radioName = radios[0].name;
+                if (!document.querySelector(`input[type="radio"][name="${radioName}"]:checked`)) return false;
+            }
+            
+            // 检查select
+            const selects = currentCard.querySelectorAll('select');
+            for (let select of selects) {
+                if (!select.value) return false;
+            }
+            
+            // 检查checkbox
+            const checkboxes = currentCard.querySelectorAll('input[type="checkbox"]');
+            if (checkboxes.length > 0) {
+                if (!Array.from(checkboxes).some(cb => cb.checked)) return false;
+            }
+            
+            return true;
+        }
+
+        // 显示验证错误提示
+        function showValidationError() {
+            const nextBtnRect = nextBtn.getBoundingClientRect();
+            let errorMsg = document.getElementById('validationError');
+            
+            if (!errorMsg) {
+                errorMsg = document.createElement('div');
+                errorMsg.id = 'validationError';
+                errorMsg.style.cssText = `
+                    position: fixed;
+                    top: ${nextBtnRect.top - 50}px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: rgba(255, 59, 48, 0.9);
+                    color: white;
+                    padding: 12px 24px;
+                    border-radius: 8px;
+                    font-weight: 600;
+                    z-index: 1000;
+                    animation: slideDown 0.3s ease-out;
+                `;
+                document.body.appendChild(errorMsg);
+                
+                // 添加动画
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes slideDown {
+                        from { transform: translateX(-50%) translateY(-20px); opacity: 0; }
+                        to { transform: translateX(-50%) translateY(0); opacity: 1; }
+                    }
+                    @keyframes slideUp {
+                        from { transform: translateX(-50%) translateY(0); opacity: 1; }
+                        to { transform: translateX(-50%) translateY(-20px); opacity: 0; }
+                    }
+                `;
+                if (!document.querySelector('#validationStyle')) {
+                    style.id = 'validationStyle';
+                    document.head.appendChild(style);
+                }
+            }
+            
+            errorMsg.innerText = 'Please answer this question before proceeding';
+            errorMsg.style.animation = 'slideDown 0.3s ease-out';
+            
+            setTimeout(() => {
+                errorMsg.style.animation = 'slideUp 0.3s ease-out';
+                setTimeout(() => errorMsg.style.display = 'none', 300);
+            }, 2000);
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (currentStep === totalSteps) {
+                const formData = new FormData(document.getElementById('auditForm'));
+                const data = Object.fromEntries(formData.entries());
+                
+                if(!data.sys) data.sys = 'HKDSE';
+                
+                localStorage.setItem('userData', JSON.stringify(data));
+                localStorage.setItem('userName', data.userName || "Agent");
+                localStorage.setItem('fromQuestionnaire', 'true');
+                
+                window.location.href = 'home_page.html';
+                return;
+            }
+
+            // 验证当前题是否被回答
+            if (!isCurrentStepAnswered()) {
+                showValidationError();
+                return;
+            }
+
+            document.querySelector(`[data-step="${currentStep}"]`).classList.remove('active');
+            currentStep++;
+            document.querySelector(`[data-step="${currentStep}"]`).classList.add('active');
+            updateUI();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentStep > 1) {
+                document.querySelector(`[data-step="${currentStep}"]`).classList.remove('active');
+                currentStep--;
+                document.querySelector(`[data-step="${currentStep}"]`).classList.add('active');
+                updateUI();
+            }
+        });
+
+        const radios = document.querySelectorAll('input[type="radio"]');
+        radios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                setTimeout(() => {
+                    if (currentStep < totalSteps) nextBtn.click();
+                }, 300);
+            });
+        });
+
+        function updateUI() {
+            progress.style.width = (currentStep / totalSteps * 100) + '%';
+            progressText.innerText = `${currentStep} / ${totalSteps}`;
+            
+            prevBtn.classList.toggle('hidden', currentStep === 1);
+            
+            if (currentStep === totalSteps) {
+                nextBtn.innerText = "Finish & Scan My Future";
+                nextBtn.style.backgroundColor = 'var(--btn-primary-hover)';
+            } else {
+                nextBtn.innerText = "Next Question →";
+                nextBtn.style.backgroundColor = 'var(--btn-primary)';
+            }
+        }
+
+        // 检查是否从登入页面跳转过来，如果是则显示欢迎弹窗
+        function showWelcomeModalIfNeeded() {
+            // 检查sessionStorage或document.referrer来判断是否从login页面跳转
+            const fromLogin = document.referrer.includes('login.html') || sessionStorage.getItem('fromLogin');
+            if (fromLogin) {
+                const modal = document.getElementById('welcomeModal');
+                if (modal) {
+                    modal.classList.add('show');
+                }
+                sessionStorage.removeItem('fromLogin');
+            }
+        }
+
+        function closeWelcomeModal() {
+            const modal = document.getElementById('welcomeModal');
+            if (modal) {
+                modal.classList.add('closing');
+                setTimeout(() => {
+                    modal.classList.remove('show');
+                    modal.classList.remove('closing');
+                }, 300);
+            }
+        }
+
+        // 页面加载完成后显示欢迎弹窗
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', showWelcomeModalIfNeeded);
+        } else {
+            showWelcomeModalIfNeeded();
+        }
+
+        document.body.classList.add('loaded');
+    </script>
+</body>
+</html>
