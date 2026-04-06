@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jobs · HK AI INNOVATOR</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 浅色模式变量 (默认) */
+        :root {
+            --bg-body: linear-gradient(135deg, #f5f5f7 0%, #e8e8ed 100%);
+            --bg-card: rgba(255, 255, 255, 0.85);
+            --text-primary: #1d1d1f;
+            --text-secondary: #86868b;
+            --text-link: #0071e3;
+            --text-link-hover: #005fc4;
+            --btn-primary: #0071e3;
+            --btn-primary-hover: #0077ed;
+            --shadow-card: 0 40px 80px rgba(0, 0, 0, 0.08), 0 15px 35px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* 深色模式变量 */
+        body.dark {
+            --bg-body: linear-gradient(135deg, #202024 0%, #2a2a2e 100%);
+            --bg-card: rgba(45, 45, 47, 0.9);
+            --text-primary: #f5f5f7;
+            --text-secondary: #a1a1a8;
+            --text-link: #66b0ff;
+            --text-link-hover: #99c4ff;
+            --btn-primary: #66b0ff;
+            --btn-primary-hover: #99c4ff;
+            --shadow-card: 0 40px 80px rgba(0, 0, 0, 0.5), 0 15px 35px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-body);
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 1.5rem;
+            line-height: 1.4;
+            color: var(--text-primary);
+            transition: background 0.5s var(--ease-smooth), color 0.3s ease;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body:not(.loaded) * {
+            animation: none !important;
+        }
+
+        /* 主题切换按钮 */
+        .theme-toggle {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            transition: background 0.3s var(--ease-smooth), transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s var(--ease-smooth), backdrop-filter 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.6);
+            line-height: 1;
+            z-index: 1000;
+            will-change: transform, background;
+        }
+
+        body.dark .theme-toggle {
+            background: rgba(45, 45, 47, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        body.dark .theme-toggle:hover {
+            background: rgba(45, 45, 47, 0.95);
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.95);
+        }
+
+        /* 头像容器 */
+        .avatar-wrapper {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            z-index: 1000;
+        }
+
+        /* 圆形头像 */
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.85);
+            background-image: url('./profile_picture.png');
+            background-size: cover;
+            background-position: center;
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(0, 113, 227, 0.4);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: transform 0.3s var(--ease-spring), box-shadow 0.3s var(--ease-smooth), border-color 0.3s var(--ease-smooth);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.6);
+            user-select: none;
+        }
+
+        body.dark .avatar {
+            background: rgba(45, 45, 47, 0.8);
+            border: 2px solid rgba(102, 176, 255, 0.4);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .avatar:hover {
+            transform: scale(1.08);
+            box-shadow: 0 12px 40px rgba(0, 113, 227, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.8);
+            border-color: rgba(0, 113, 227, 0.6);
+        }
+
+        body.dark .avatar:hover {
+            box-shadow: 0 12px 40px rgba(102, 176, 255, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.15);
+            border-color: rgba(102, 176, 255, 0.6);
+        }
+
+        /* 头像动画 */
+        @keyframes avatarGrow {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            70% {
+                transform: scale(1.08);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes avatarShrink {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            40% {
+                transform: scale(0.08);
+            }
+            100% {
+                transform: scale(0);
+                opacity: 0;
+            }
+        }
+
+        .avatar.entering {
+            animation: avatarGrow 0.6s var(--ease-spring) forwards;
+        }
+
+        .avatar.leaving {
+            animation: avatarShrink 0.7s var(--ease-spring) forwards;
+        }
+
+        /* 侧边栏菜单 */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 420px;
+            height: 100vh;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px) saturate(180%);
+            padding: 2rem 0;
+            border-radius: 0 24px 24px 0;
+            box-shadow: 4px 0 16px rgba(0, 0, 0, 0.15);
+            transform: translateX(-100%);
+            transition: transform 0.4s var(--ease-spring);
+            z-index: 500;
+            overflow-y: auto;
+            clip-path: inset(0 0 0 0);
+        }
+
+        body.dark .sidebar {
+            background: rgba(45, 45, 47, 0.9);
+            box-shadow: 4px 0 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .sidebar.open {
+            transform: translateX(-120px);
+        }
+
+        /* 侧边栏关闭按钮 */
+        .sidebar-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: transform 0.2s var(--ease-spring);
+            padding: 0;
+        }
+
+        .sidebar-close:hover {
+            transform: scale(1.1);
+        }
+
+        /* 侧边栏菜单项 */
+        .sidebar-menu {
+            margin-top: 4rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            padding: 0 1.5rem;
+        }
+
+        .menu-item {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(0, 0, 0, 0.12);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 8px;
+            font-size: 1.15rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s var(--ease-smooth), color 0.3s var(--ease-smooth);
+            position: relative;
+            overflow: hidden;
+            text-align: right;
+        }
+
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+
+        .menu-item:hover {
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text-primary);
+        }
+
+        .menu-item:hover::before {
+            opacity: 1;
+        }
+
+        body.dark .menu-item {
+            background: rgba(255, 255, 255, 0.26);
+            color: var(--text-primary);
+        }
+
+        body.dark .menu-item:hover {
+            background: rgba(255, 255, 255, 0.38);
+            color: var(--text-primary);
+        }
+
+        .sidebar-logout-btn {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 1.5rem;
+            right: 1.5rem;
+            background: var(--btn-primary);
+            color: #fff;
+            border: none;
+            border-radius: 24px;
+            padding: 0.85rem 2.2rem;
+            font-size: 1.08rem;
+            font-weight: 600;
+            box-shadow: 0 4px 16px rgba(0,113,227,0.10);
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+
+        .sidebar-logout-btn:hover {
+            background: var(--btn-primary-hover);
+        }
+
+        /* 遮罩层 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s var(--ease-smooth);
+            z-index: 450;
+        }
+
+        .overlay.show {
+            background: rgba(0, 0, 0, 0.3);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* 职业分类容器 */
+        .job-categories-container {
+            margin-top: 5rem;
+            margin-bottom: 2rem;
+            padding: 0 2rem;
+        }
+
+        .job-categories-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            max-width: 700px;
+            margin: 0 auto;
+            grid-auto-rows: auto;
+        }
+
+        .job-category-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 1.8rem;
+            box-shadow: var(--shadow-card);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            cursor: pointer;
+            transition: all 0.3s var(--ease-smooth), transform 0.2s var(--ease-spring);
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            animation: slideInFromBottom 0.6s var(--ease-spring) forwards;
+        }
+
+        body.dark .job-category-card {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .job-category-card:hover {
+            background: rgba(0, 113, 227, 0.1);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 113, 227, 0.12);
+        }
+
+        body.dark .job-category-card:hover {
+            background: rgba(102, 176, 255, 0.1);
+            box-shadow: 0 12px 40px rgba(102, 176, 255, 0.12);
+        }
+
+        .job-category-card:has(.job-sub-box:hover) {
+            background: var(--bg-card);
+            transform: translateY(0);
+            box-shadow: var(--shadow-card);
+        }
+
+        body.dark .job-category-card:has(.job-sub-box:hover) {
+            background: var(--bg-card);
+            box-shadow: var(--shadow-card);
+        }
+
+        .job-category-text {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+            line-height: 1.4;
+            text-align: left;
+            margin-bottom: 0.5rem;
+        }
+        
+        .job-sub-boxes {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.8rem;
+        }
+        
+        .job-sub-box {
+            background: rgba(0, 113, 227, 0.08);
+            border: 1px solid rgba(0, 113, 227, 0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s var(--ease-smooth);
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        body.dark .job-sub-box {
+            background: rgba(102, 176, 255, 0.08);
+            border-color: rgba(102, 176, 255, 0.2);
+        }
+        
+        .job-sub-box:hover {
+            background: rgba(0, 113, 227, 0.15);
+            border-color: rgba(0, 113, 227, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        body.dark .job-sub-box:hover {
+            background: rgba(102, 176, 255, 0.15);
+            border-color: rgba(102, 176, 255, 0.4);
+        }
+
+        /* 动画 */
+        @keyframes slideInFromBottom {
+            0% { opacity: 0; transform: translateY(50px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .job-categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .job-categories-container {
+                padding: 0 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .job-categories-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .avatar {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+            
+            .avatar-wrapper {
+                top: 16px;
+                left: 16px;
+            }
+            
+            .theme-toggle {
+                top: 16px;
+                right: 16px;
+                width: 44px;
+                height: 44px;
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body class="">
+    <script>
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                document.body.classList.add('loaded');
+            });
+        } else {
+            document.body.classList.add('loaded');
+        }
+    </script>
+
+    <!-- 主题切换按钮 -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+
+    <!-- 头像容器 -->
+    <div class="avatar-wrapper">
+        <div class="avatar" id="avatar"></div>
+    </div>
+
+    <!-- 遮罩层 -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- 侧边栏菜单 -->
+    <div class="sidebar" id="sidebar">
+        <button class="sidebar-close" id="sidebarClose">✕</button>
+        <div class="sidebar-menu">
+            <button class="menu-item" id="homePageBtn">Home Page</button>
+            <button class="menu-item" id="profileMenuBtn">Profile</button>
+            <button class="menu-item" id="jobMenuBtn">Job Category</button>
+        </div>
+        <button class="sidebar-logout-btn" id="logoutBtn">Log Out</button>
+    </div>
+
+    <!-- 职业分类网格 -->
+    <div class="job-categories-container">
+        <div class="job-categories-grid">
+            <div class="job-category-card">
+                <div class="job-category-text">Agriculture and Natural Resources</div>
+                <div class="job-sub-boxes">
+                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box"></div>
+                </div>
+            </div>
+            <div class="job-category-card">
+                <div class="job-category-text">Architecture and Construction</div>
+                <div class="job-sub-boxes">
+                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box"></div>
+                </div>
+            </div>
+            <div class="job-category-card">
+                <div class="job-category-text">Business Management and Administration</div>
+                <div class="job-sub-boxes">
+                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box"></div>
+                </div>
+            </div>
+            <div class="job-category-card">
+                <div class="job-category-text">Education and Learning</div>
+                <div class="job-sub-boxes">
+                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box"></div>
+                </div>
+            </div>
+            <div class="job-category-card">
+                <div class="job-category-text">Health Science</div>
+                <div class="job-sub-boxes">
+                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box"></div>
+                </div>
+            </div>
+            <div class="job-category-card">
+                <div class="job-category-text">Information Technology</div>
+                <div class="job-sub-boxes">
+                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box"></div>
+                </div>
+            </div>
+            <div class="job-category-card">
+                <div class="job-category-text">Law and Public Safety</div>
+                <div class="job-sub-boxes">
+                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box"></div>
+                </div>
+            </div>
+            <div class="job-category-card">
+                <div class="job-category-text">Retail, Sales and Customer Service</div>
+                <div class="job-sub-boxes">
+                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box"></div>
+                </div>
+            </div>
+            <div class="job-category-card">
+                <div class="job-category-text">Hospitality and Tourism</div>
+                <div class="job-sub-boxes">
+                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box"></div>
+                </div>
+            </div>
+            <div class="job-category-card">
+                <div class="job-category-text">Transportation and Logistics</div>
+                <div class="job-sub-boxes">
+                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box"></div>
+                </div>
+            </div>
+            <div class="job-category-card">
+                <div class="job-category-text">Manufacturing and Engineering</div>
+                <div class="job-sub-boxes">
+                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box"></div>
+                </div>
+            </div>
+            <div class="job-category-card">
+                <div class="job-category-text">Arts, Design and Media</div>
+                <div class="job-sub-boxes">
+                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Log Out 弹窗 DOM -->
+    <script>
+        function showLogoutModal() {
+            const mask = document.createElement('div');
+            mask.id = 'logoutModalMask';
+            mask.className = 'logout-modal-mask';
+            mask.innerHTML = `
+                <div class="logout-modal">
+                    <div class="logout-modal-text">正在登出</div>
+                    <svg class="logout-spinner" viewBox="0 0 48 48">
+                        <circle class="logout-spinner-c-bg" cx="24" cy="24" r="20"/>
+                        <circle class="logout-spinner-c" cx="24" cy="24" r="20"/>
+                    </svg>
+                </div>
+            `;
+            
+            const style = document.createElement('style');
+            style.innerHTML = `
+                .logout-modal-mask {
+                    position: fixed; left: 0; top: 0; width: 100vw; height: 100vh;
+                    background: rgba(0,0,0,0.18); z-index: 2000; display: flex; align-items: center; justify-content: center;
+                    animation: logoutMaskFadeIn 0.3s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+                }
+                .logout-modal {
+                    background: var(--bg-card); border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+                    padding: 2.2rem 2.8rem; display: flex; flex-direction: column; align-items: center; min-width: 260px;
+                    border: 1px solid rgba(0,0,0,0.04);
+                    animation: logoutModalPopIn 0.4s var(--ease-spring) forwards;
+                }
+                .logout-modal-mask.hiding {
+                    animation: logoutMaskFadeOut 0.35s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+                }
+                .logout-modal-mask.hiding .logout-modal {
+                    animation: logoutModalShrinkOut 0.35s var(--ease-spring) forwards;
+                }
+                .logout-modal-text {
+                    font-size: 1.13rem; color: var(--text-primary); margin-bottom: 1.5rem; font-weight: 600;
+                }
+                .logout-spinner {
+                    width: 48px; height: 48px; display: block;
+                }
+                .logout-spinner-c-bg {
+                    fill: none; stroke: #e0e7ef; stroke-width: 5; opacity: 0.5;
+                }
+                .logout-spinner-c {
+                    fill: none; stroke: #0071e3; stroke-width: 5; stroke-linecap: round;
+                    stroke-dasharray: 126; stroke-dashoffset: 126;
+                    transform-origin: 50% 50%;
+                    animation: logout-spin 1.2s cubic-bezier(0.34,1.56,0.64,1) infinite, logout-progress 2s cubic-bezier(0.34,1.56,0.64,1) forwards;
+                }
+                @keyframes logout-spin {
+                    100% { transform: rotate(360deg); }
+                }
+                @keyframes logout-progress {
+                    100% { stroke-dashoffset: 0; }
+                }
+                @keyframes logoutMaskFadeIn {
+                    0% { background: rgba(0,0,0,0); }
+                    100% { background: rgba(0,0,0,0.18); }
+                }
+                @keyframes logoutMaskFadeOut {
+                    0% { background: rgba(0,0,0,0.18); opacity: 1; }
+                    100% { background: rgba(0,0,0,0); opacity: 0; }
+                }
+                @keyframes logoutModalPopIn {
+                    0% { opacity: 0; transform: scale(0.85) translateY(20px); filter: blur(10px); }
+                    50% { transform: scale(1.02); }
+                    100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+                }
+                @keyframes logoutModalShrinkOut {
+                    0% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+                    100% { opacity: 0; transform: scale(0.8) translateY(-20px); filter: blur(10px); }
+                }
+            `;
+            document.head.appendChild(style);
+            document.body.appendChild(mask);
+        }
+
+        function hideLogoutModal() {
+            const mask = document.getElementById('logoutModalMask');
+            if (mask) {
+                mask.classList.add('hiding');
+                setTimeout(() => {
+                    if (mask.parentNode) mask.remove();
+                }, 350);
+            }
+        }
+
+        (function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const avatar = document.getElementById('avatar');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            const sidebarClose = document.getElementById('sidebarClose');
+            const homePageBtn = document.getElementById('homePageBtn');
+            const profileMenuBtn = document.getElementById('profileMenuBtn');
+            const jobMenuBtn = document.getElementById('jobMenuBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const body = document.body;
+
+            // 主题切换功能
+            body.classList.remove('dark');
+            themeToggle.textContent = '🌙';
+            
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                body.classList.add('dark');
+                themeToggle.textContent = '☀️';
+            }
+
+            themeToggle.addEventListener('click', () => {
+                if (body.classList.contains('dark')) {
+                    body.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                    themeToggle.textContent = '🌙';
+                } else {
+                    body.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                    themeToggle.textContent = '☀️';
+                }
+            });
+
+            // 切换侧边栏
+            avatar.addEventListener('click', () => {
+                if (sidebar.classList.contains('open')) {
+                    closeSidebar();
+                } else {
+                    sidebar.classList.add('open');
+                    overlay.classList.add('show');
+                }
+            });
+
+            // 关闭侧边栏
+            function closeSidebar() {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('show');
+            }
+
+            sidebarClose.addEventListener('click', closeSidebar);
+            overlay.addEventListener('click', closeSidebar);
+
+            // Home Page按钮点击事件
+            homePageBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                closeSidebar();
+                window.location.href = './home_page.html';
+            });
+
+            // Profile按钮点击事件
+            profileMenuBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                closeSidebar();
+                window.location.href = './profile.html';
+            });
+
+            // Job按钮点击事件
+            jobMenuBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                closeSidebar();
+            });
+
+            // Log Out按钮点击事件
+            logoutBtn.addEventListener('click', function() {
+                closeSidebar();
+                showLogoutModal();
+                setTimeout(function() {
+                    hideLogoutModal();
+                }, 2000);
+                setTimeout(function() {
+                    window.location.href = '../login pages/login.html';
+                }, 2350);
+            });
+
+            // 页面加载时头像放大入场
+            window.addEventListener('load', () => {
+                avatar.classList.remove('leaving');
+                avatar.classList.add('entering');
+            });
+
+            // 返回此页面时头像放大入场
+            window.addEventListener('pageshow', (event) => {
+                if (event.persisted) {
+                    avatar.classList.remove('leaving');
+                    avatar.classList.add('entering');
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
