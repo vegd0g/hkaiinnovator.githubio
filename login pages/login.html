@@ -789,8 +789,10 @@
                 showSuccess('Verifying, please wait...');
                 setTimeout(() => {
                     showSuccess('✅ Login successful! Redirecting...');
-                    // 带动画跳转到home_page
-                    startExitAnimation('../home page/home_page.html'); 
+                    // 设置标记表示来自登入页面
+                    sessionStorage.setItem('fromLogin', 'true');
+                    // 带动画跳转到questionnaire
+                    startExitAnimation('../home page/questionnaire.html'); 
                 }, 1000);
             }
 
