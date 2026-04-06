@@ -20,7 +20,6 @@
             --text-secondary: #86868b;
             --text-link: #0071e3;
             --text-link-hover: #005fc4;
-            --bg-input: rgba(242, 242, 247, 0.85);
             --btn-primary: #0071e3;
             --btn-primary-hover: #0077ed;
             --shadow-card: 0 40px 80px rgba(0, 0, 0, 0.08), 0 15px 35px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.6);
@@ -36,7 +35,6 @@
             --text-secondary: #a1a1a8;
             --text-link: #66b0ff;
             --text-link-hover: #99c4ff;
-            --bg-input: rgba(32, 32, 38, 0.95);
             --btn-primary: #66b0ff;
             --btn-primary-hover: #99c4ff;
             --shadow-card: 0 40px 80px rgba(0, 0, 0, 0.5), 0 15px 35px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.1);
@@ -47,9 +45,6 @@
             background: var(--bg-body);
             background-attachment: fixed;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             padding: 1.5rem;
             line-height: 1.4;
             color: var(--text-primary);
@@ -80,10 +75,11 @@
             align-items: center;
             justify-content: center;
             color: var(--text-primary);
-            transition: background 0.3s var(--ease-smooth), transform 0.15s var(--ease-spring), box-shadow 0.3s var(--ease-smooth);
+            transition: background 0.3s var(--ease-smooth), transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s var(--ease-smooth), backdrop-filter 0.3s ease;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.6);
             line-height: 1;
             z-index: 1000;
+            will-change: transform, background;
         }
 
         body.dark .theme-toggle {
@@ -93,152 +89,617 @@
         }
 
         .theme-toggle:hover {
+            transform: scale(1.1);
             background: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.8);
         }
 
         body.dark .theme-toggle:hover {
-            background: rgba(60, 60, 62, 0.9);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.15);
+            background: rgba(45, 45, 47, 0.95);
         }
 
-        /* 弹入动画 */
-        @keyframes containerPopIn {
+        .theme-toggle:active {
+            transform: scale(0.95);
+        }
+
+        /* 头像容器 */
+        .avatar-wrapper {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            z-index: 1000;
+        }
+
+        /* 圆形头像 */
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.85);
+            background-image: url('./profile_picture.png');
+            background-size: cover;
+            background-position: center;
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(0, 113, 227, 0.4);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: transform 0.3s var(--ease-spring), box-shadow 0.3s var(--ease-smooth), border-color 0.3s var(--ease-smooth);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.6);
+            user-select: none;
+        }}
+
+        body.dark .avatar {
+            background: rgba(45, 45, 47, 0.8);
+            border: 2px solid rgba(102, 176, 255, 0.4);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .avatar:hover {
+            transform: scale(1.08);
+            box-shadow: 0 12px 40px rgba(0, 113, 227, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.8);
+            border-color: rgba(0, 113, 227, 0.6);
+        }
+
+        body.dark .avatar:hover {
+            box-shadow: 0 12px 40px rgba(102, 176, 255, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.15);
+            border-color: rgba(102, 176, 255, 0.6);
+        }
+
+        /* 头像动画 */
+        @keyframes avatarGrow {
             0% {
+                transform: scale(0);
                 opacity: 0;
-                transform: scale(0.94) translateY(20px);
-                filter: blur(10px);
             }
-            50% {
-                transform: scale(1.02);
+            70% {
+                transform: scale(1.08);
+                opacity: 1;
             }
             100% {
+                transform: scale(1);
                 opacity: 1;
-                transform: scale(1) translateY(0);
-                filter: blur(0);
             }
         }
 
-        /* 主容器卡片 */
-        .home-container {
-            background-color: var(--bg-card);
-            backdrop-filter: blur(20px) saturate(180%);
-            padding: 3rem 2.5rem;
-            border-radius: 32px;
-            border: 1px solid rgba(255, 255, 255, 0.6);
-            box-shadow: var(--shadow-card);
-            width: 100%;
-            max-width: 500px;
-            transition: background-color 0.4s var(--ease-smooth), box-shadow 0.4s var(--ease-smooth), opacity 0.5s var(--ease-smooth), transform 0.6s var(--ease-spring);
-            animation: containerPopIn 0.7s var(--ease-spring);
-            position: relative;
+        @keyframes avatarShrink {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            40% {
+                transform: scale(0.08);
+            }
+            100% {
+                transform: scale(0);
+                opacity: 0;
+            }
         }
 
-        body.dark .home-container {
-            border: 1px solid rgba(255, 255, 255, 0.15);
+        .avatar.entering {
+            animation: avatarGrow 0.6s var(--ease-spring) forwards;
         }
 
-        .home-container::before {
-            content: '';
-            position: absolute;
+        .avatar.leaving {
+            animation: avatarShrink 0.7s var(--ease-spring) forwards;
+        }
+
+        /* 侧边栏菜单 */
+        .sidebar {
+            position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 100%);
-            border-radius: 32px;
-            pointer-events: none;
+            width: 420px;
+            height: 100vh;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px) saturate(180%);
+            padding: 2rem 0;
+            border-radius: 0 24px 24px 0;
+            box-shadow: 4px 0 16px rgba(0, 0, 0, 0.15);
+            transform: translateX(-100%);
+            transition: transform 0.4s var(--ease-spring);
+            z-index: 500;
+            overflow-y: auto;
+            clip-path: inset(0 0 0 0);
         }
 
-        /* 欢迎标题 */
-        .welcome-section {
-            text-align: center;
-            margin-bottom: 3rem;
+        body.dark .sidebar {
+            background: rgba(45, 45, 47, 0.9);
+            box-shadow: 4px 0 16px rgba(0, 0, 0, 0.4);
         }
 
-        .welcome-section h1 {
-            font-size: 2.2rem;
-            font-weight: 600;
-            letter-spacing: -0.02em;
+        .sidebar.open {
+            transform: translateX(-120px);
+        }
+
+        /* 侧边栏关闭按钮 */
+        .sidebar-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
             color: var(--text-primary);
-            margin-bottom: 0.5rem;
+            transition: transform 0.2s var(--ease-spring);
+            padding: 0;
         }
 
-        .welcome-section p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            font-weight: 400;
+        .sidebar-close:hover {
+            transform: scale(1.1);
         }
 
-        /* 按钮组 */
-        .button-group {
+        /* 侧边栏菜单项 */
+        .sidebar-menu {
+            margin-top: 4rem;
             display: flex;
             flex-direction: column;
-            gap: 1.2rem;
+            gap: 0.8rem;
         }
 
-        .profile-button {
+        .menu-item {
             width: 100%;
-            padding: 1rem 1.5rem;
-            background: linear-gradient(135deg, var(--btn-primary) 0%, var(--btn-primary-hover) 100%);
-            color: white;
+            padding: 0.8rem 1rem;
+            background: rgba(0, 0, 0, 0.12);
+            color: var(--text-primary);
             border: none;
-            border-radius: 40px;
-            font-size: 1.05rem;
+            border-radius: 8px;
+            font-size: 1.15rem;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s var(--ease-smooth), transform 0.3s var(--ease-spring), box-shadow 0.3s var(--ease-smooth);
-            box-shadow: 0 8px 24px rgba(0, 113, 227, 0.25);
+            transition: background 0.3s var(--ease-smooth), color 0.3s var(--ease-smooth);
             position: relative;
             overflow: hidden;
         }
 
-        .profile-button::before {
+        .menu-item::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
-            border-radius: 40px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
             opacity: 0;
             transition: opacity 0.3s ease;
+            z-index: -1;
         }
 
-        .profile-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(0, 113, 227, 0.35);
+        .menu-item:hover {
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text-primary);
         }
 
-        .profile-button:hover::before {
+        .menu-item:hover::before {
             opacity: 1;
         }
 
-        .profile-button:active {
-            box-shadow: 0 4px 12px rgba(0, 113, 227, 0.2);
+        body.dark .menu-item {
+            background: rgba(255, 255, 255, 0.26);
+            color: var(--text-primary);
         }
 
-        body.dark .profile-button {
-            box-shadow: 0 8px 24px rgba(102, 176, 255, 0.3);
+        body.dark .menu-item:hover {
+            background: rgba(255, 255, 255, 0.38);
+            color: var(--text-primary);
         }
 
-        body.dark .profile-button:hover {
-            box-shadow: 0 12px 32px rgba(102, 176, 255, 0.4);
-        }
-
-        /* 页面退出动画 */
-        .home-container.page-exit {
+        /* 遮罩层 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0);
             opacity: 0;
-            transform: scale(0.96) translateY(-20px);
-            filter: blur(8px);
             pointer-events: none;
+            transition: opacity 0.4s var(--ease-smooth);
+            z-index: 450;
+        }
+
+        .overlay.show {
+            background: rgba(0, 0, 0, 0.3);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Log Out 弹窗样式 */
+        .logout-modal-mask {
+            position: fixed; left: 0; top: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.18); z-index: 2000; display: flex; align-items: center; justify-content: center;
+            animation: logoutMaskFadeIn 0.3s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+        }
+        .logout-modal {
+            background: var(--bg-card); border-radius: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+            padding: 2.2rem 2.8rem; display: flex; flex-direction: column; align-items: center; min-width: 260px;
+            border: 1px solid rgba(0,0,0,0.04);
+            animation: logoutModalPopIn 0.4s var(--ease-spring) forwards;
+        }
+        .logout-modal-mask.hiding {
+            animation: logoutMaskFadeOut 0.35s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+        }
+        .logout-modal-mask.hiding .logout-modal {
+            animation: logoutModalShrinkOut 0.35s var(--ease-spring) forwards;
+        }
+        .logout-modal-text {
+            font-size: 1.13rem; color: var(--text-primary); margin-bottom: 1.5rem; font-weight: 600;
+        }
+        .logout-spinner {
+            width: 48px; height: 48px; display: block;
+        }
+        .logout-spinner-c-bg {
+            fill: none; stroke: #e0e7ef; stroke-width: 5; opacity: 0.5;
+        }
+        .logout-spinner-c {
+            fill: none; stroke: #0071e3; stroke-width: 5; stroke-linecap: round;
+            stroke-dasharray: 126; stroke-dashoffset: 126;
+            transform-origin: 50% 50%;
+            animation: logout-spin 1.2s cubic-bezier(0.34,1.56,0.64,1) infinite, logout-progress 2s cubic-bezier(0.34,1.56,0.64,1) forwards;
+        }
+        @keyframes logout-spin {
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes logout-progress {
+            100% { stroke-dashoffset: 0; }
+        }
+        @keyframes logoutMaskFadeIn {
+            0% { background: rgba(0,0,0,0); }
+            100% { background: rgba(0,0,0,0.18); }
+        }
+        @keyframes logoutMaskFadeOut {
+            0% { background: rgba(0,0,0,0.18); opacity: 1; }
+            100% { background: rgba(0,0,0,0); opacity: 0; }
+        }
+        @keyframes logoutModalPopIn {
+            0% { opacity: 0; transform: scale(0.85) translateY(20px); filter: blur(10px); }
+            50% { transform: scale(1.02); }
+            100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+        }
+        @keyframes logoutModalShrinkOut {
+            0% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+            100% { opacity: 0; transform: scale(0.8) translateY(-20px); filter: blur(10px); }
+        }
+
+        /* Module Entry & Exit Animations */
+        @keyframes slideInFromLeft {
+            0% { opacity: 0; transform: translateX(-50px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInFromRight {
+            0% { opacity: 0; transform: translateX(50px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInFromBottom {
+            0% { opacity: 0; transform: translateY(50px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideOutToLeft {
+            0% { opacity: 1; transform: translateX(0); }
+            100% { opacity: 0; transform: translateX(-50px); }
+        }
+
+        @keyframes slideOutToRight {
+            0% { opacity: 1; transform: translateX(0); }
+            100% { opacity: 0; transform: translateX(50px); }
+        }
+
+        @keyframes slideOutToBottom {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(50px); }
+        }
+
+        /* Module animations with delays */
+        .news-feed-section {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 1rem;
+            box-shadow: var(--shadow-card);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            grid-column: 1;
+            grid-row: 1;
+            overflow-y: auto;
+            animation: slideInFromLeft 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .info-quick-section {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 1rem;
+            box-shadow: var(--shadow-card);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            grid-column: 2;
+            grid-row: 1;
+            overflow-y: auto;
+            animation: slideInFromRight 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s forwards;
+            opacity: 0;
+        }
+
+        body.dark .info-quick-section {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .jobs-section {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-card);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            grid-column: 1 / -1;
+            grid-row: 2;
+            overflow-y: auto;
+            animation: slideInFromBottom 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s forwards;
+            opacity: 0;
+        }
+
+        body.dark .jobs-section {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Exit animations (triggered by JS) */
+        .news-feed-section.exit-animation {
+            animation: slideOutToLeft 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .info-quick-section.exit-animation {
+            animation: slideOutToRight 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .jobs-section.exit-animation {
+            animation: slideOutToBottom 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        .sidebar-logout-btn {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 1.5rem;
+            right: 1.5rem;
+            background: var(--btn-primary);
+            color: #fff;
+            border: none;
+            border-radius: 24px;
+            padding: 0.85rem 2.2rem;
+            font-size: 1.08rem;
+            font-weight: 600;
+            box-shadow: 0 4px 16px rgba(0,113,227,0.10);
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+
+        .sidebar-logout-btn:hover {
+            background: var(--btn-primary-hover);
+        }
+
+        /* 主内容容器 */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 2rem;
+            margin-left: 0;
+            height: calc(100vh - 12rem);
+            max-height: 85vh;
+        }
+
+        /* News Feed 模块 */
+
+        body.dark .news-feed-section {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.8rem;
+            letter-spacing: -0.02em;
+            position: sticky;
+            top: 0;
+            background: var(--bg-card);
+            padding: 0.5rem 0;
+            z-index: 10;
+        }
+
+        .feed-items {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            flex: 1;
+        }
+
+        .feed-item {
+            padding: 0.7rem;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            transition: background 0.3s var(--ease-smooth), transform 0.2s ease;
+            cursor: pointer;
+        }
+
+        body.dark .feed-item {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .feed-item:hover {
+            background: rgba(0, 0, 0, 0.08);
+            transform: translateX(4px);
+        }
+
+        body.dark .feed-item:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .feed-item-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.2rem;
+        }
+
+        .feed-item-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.3;
+        }
+
+        /* Info & Quick Job Section */
+
+        body.dark .info-quick-section {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-box {
+            padding: 0.75rem;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        body.dark .info-box {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .info-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .info-value {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .quick-jobs {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            flex: 1;
+        }
+
+        .quick-job-item {
+            padding: 0.7rem;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            transition: background 0.3s var(--ease-smooth), transform 0.2s ease;
+            cursor: pointer;
+        }
+
+        body.dark .quick-job-item {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .quick-job-item:hover {
+            background: rgba(0, 0, 0, 0.08);
+            transform: translateX(4px);
+        }
+
+        body.dark .quick-job-item:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .quick-job-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.15rem;
+        }
+
+        .quick-job-company {
+            font-size: 0.75rem;
+            color: var(--text-link);
+        }
+
+        /* Jobs 模块 */
+
+        body.dark .jobs-section {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .job-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .job-item {
+            padding: 1rem;
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            transition: background 0.3s var(--ease-smooth), transform 0.2s ease;
+            cursor: pointer;
+        }
+
+        body.dark .job-item {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .job-item:hover {
+            background: rgba(0, 0, 0, 0.08);
+            transform: translateY(-4px);
+        }
+
+        body.dark .job-item:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .job-item-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.4rem;
+        }
+
+        .job-item-company {
+            font-size: 0.85rem;
+            color: var(--text-link);
+            margin-bottom: 0.3rem;
+        }
+
+        .job-item-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
         }
 
         @media (max-width: 480px) {
-            .home-container {
-                padding: 2rem 1.5rem;
-                border-radius: 24px;
+            .avatar {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+            .avatar-wrapper {
+                top: 16px;
+                left: 16px;
             }
             .theme-toggle {
                 top: 16px;
@@ -246,6 +707,26 @@
                 width: 44px;
                 height: 44px;
                 font-size: 1.3rem;
+            }
+            .sidebar {
+                width: 360px;
+            }
+            .main-content {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto;
+                height: auto;
+            }
+            .news-feed-section {
+                grid-column: 1;
+                grid-row: 1;
+            }
+            .info-quick-section {
+                grid-column: 1;
+                grid-row: 2;
+            }
+            .jobs-section {
+                grid-column: 1;
+                grid-row: 3;
             }
         }
     </style>
@@ -264,24 +745,145 @@
     <!-- 主题切换按钮 -->
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
 
-    <div class="home-container" id="homeContainer">
-        <div class="welcome-section">
-            <h1>Welcome</h1>
-            <p>HK AI INNOVATOR</p>
+    <!-- 头像容器 -->
+    <div class="avatar-wrapper">
+        <div class="avatar" id="avatar"></div>
+    </div>
+
+    <!-- 遮罩层 -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- 侧边栏菜单 -->
+    <div class="sidebar" id="sidebar">
+        <button class="sidebar-close" id="sidebarClose">✕</button>
+        <div class="sidebar-menu">
+            <button class="menu-item" id="profileMenuBtn">Profile</button>
+        </div>
+        <button class="sidebar-logout-btn" id="logoutBtn">Log Out</button>
+    </div>
+
+    <!-- 主要内容区域 -->
+    <div class="main-content">
+        <!-- News Feed 模块 -->
+        <div class="news-feed-section">
+            <h2 class="section-title">News Feed</h2>
+            <div class="feed-items">
+                <div class="feed-item">
+                    <div class="feed-item-title">🚀 New AI Job Recommendation System</div>
+                    <div class="feed-item-desc">Advanced AI system now recommends jobs based on your skills and interests.</div>
+                </div>
+                <div class="feed-item">
+                    <div class="feed-item-title">📊 2024 AI Industry Trends</div>
+                    <div class="feed-item-desc">AI engineer demand increased 45%, salaries at all-time high.</div>
+                </div>
+                <div class="feed-item">
+                    <div class="feed-item-title">🎯 Skill Development Programs</div>
+                    <div class="feed-item-desc">Free online courses to enhance your skills and career prospects.</div>
+                </div>
+            </div>
         </div>
 
-        <div class="button-group">
-            <button class="profile-button" id="profileButton">Profile</button>
+        <!-- Info & Quick Job Section -->
+        <div class="info-quick-section">
+            <div class="info-box">
+                <div class="info-label">📍 Location</div>
+                <div class="info-value">Hong Kong</div>
+            </div>
+            <div class="info-box">
+                <div class="info-label">🕐 Current Time</div>
+                <div class="info-value" id="currentTime">12:30 PM</div>
+            </div>
+            <div class="info-box">
+                <div class="info-label">✨ Current Job Opportunity</div>
+                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">No opportunities matched yet</div>
+            </div>
+        </div>
+
+        <!-- Jobs 模块 -->
+        <div class="jobs-section">
+            <h2 class="section-title">All Featured Jobs</h2>
+            <div class="job-items">
+                <div class="job-item">
+                    <div class="job-item-title">Senior AI Engineer</div>
+                    <div class="job-item-company">Google · Beijing</div>
+                    <div class="job-item-desc">Lead large-scale ML projects. 80-120K/month</div>
+                </div>
+                <div class="job-item">
+                    <div class="job-item-title">ML Scientist</div>
+                    <div class="job-item-company">OpenAI · San Francisco</div>
+                    <div class="job-item-desc">Cutting-edge AI research. 150-200K/year</div>
+                </div>
+                <div class="job-item">
+                    <div class="job-item-title">Data Scientist</div>
+                    <div class="job-item-company">Alibaba · Hangzhou</div>
+                    <div class="job-item-desc">E-commerce analytics & recommendations. 60-90K/month</div>
+                </div>
+                <div class="job-item">
+                    <div class="job-item-title">AI Product Manager</div>
+                    <div class="job-item-company">ByteDance · Shenzhen</div>
+                    <div class="job-item-desc">Lead AI product strategy. 70-110K/month</div>
+                </div>
+                <div class="job-item">
+                    <div class="job-item-title">NLP Engineer</div>
+                    <div class="job-item-company">Meta · Menlo Park</div>
+                    <div class="job-item-desc">Natural language processing advancement. 130-180K/year</div>
+                </div>
+                <div class="job-item">
+                    <div class="job-item-title">Computer Vision Specialist</div>
+                    <div class="job-item-company">Tesla · Silicon Valley</div>
+                    <div class="job-item-desc">Autonomous vehicle development. 140-190K/year</div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
+        // --- Log Out 弹窗 DOM ---
+        function showLogoutModal() {
+            const mask = document.createElement('div');
+            mask.id = 'logoutModalMask';
+            mask.className = 'logout-modal-mask';
+            mask.innerHTML = `
+                <div class="logout-modal">
+                    <div class="logout-modal-text">正在登出</div>
+                    <svg class="logout-spinner" viewBox="0 0 48 48">
+                        <circle class="logout-spinner-c-bg" cx="24" cy="24" r="20"/>
+                        <circle class="logout-spinner-c" cx="24" cy="24" r="20"/>
+                    </svg>
+                </div>
+            `;
+            document.body.appendChild(mask);
+        }
+        function hideLogoutModal() {
+            const mask = document.getElementById('logoutModalMask');
+            if (mask) {
+                mask.classList.add('hiding');
+                setTimeout(() => {
+                    if (mask.parentNode) mask.remove();
+                }, 350);
+            }
+        }
+
         (function() {
             const themeToggle = document.getElementById('themeToggle');
-            const profileButton = document.getElementById('profileButton');
-            const homeContainer = document.getElementById('homeContainer');
+            const avatar = document.getElementById('avatar');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            const sidebarClose = document.getElementById('sidebarClose');
+            const profileMenuBtn = document.getElementById('profileMenuBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const currentTimeEl = document.getElementById('currentTime');
             const body = document.body;
             let isAnimating = false;
+
+            // Update current time
+            function updateCurrentTime() {
+                const now = new Date();
+                const time = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+                if (currentTimeEl) currentTimeEl.textContent = time;
+            }
+            updateCurrentTime();
+            setInterval(updateCurrentTime, 1000);
 
             // 主题切换功能
             body.classList.remove('dark');
@@ -305,25 +907,77 @@
                 }
             });
 
-            // 页面跳转动画函数
-            function startExitAnimation(url) {
-                if (isAnimating) return;
-                if (!url || url === '#') return;
+            // 切换侧边栏
+            avatar.addEventListener('click', () => {
+                if (sidebar.classList.contains('open')) {
+                    closeSidebar();
+                } else {
+                    sidebar.classList.add('open');
+                    overlay.classList.add('show');
+                }
+            });
 
-                isAnimating = true;
-                homeContainer.classList.add('page-exit');
-
-                setTimeout(() => {
-                    window.location.href = url;
-                }, 250);
+            // 关闭侧边栏
+            function closeSidebar() {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('show');
             }
 
+            sidebarClose.addEventListener('click', closeSidebar);
+            overlay.addEventListener('click', closeSidebar);
+
             // Profile按钮点击事件
-            profileButton.addEventListener('click', function(e) {
+            profileMenuBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                startExitAnimation('./profile.html');
+                if (isAnimating) return;
+                isAnimating = true;
+                
+                // 关闭侧边栏
+                closeSidebar();
+                
+                // 头像缩小消失动画
+                avatar.classList.remove('entering');
+                avatar.classList.add('leaving');
+
+                // 三个模块的离开动画
+                const newsFeed = document.querySelector('.news-feed-section');
+                const infoQuick = document.querySelector('.info-quick-section');
+                const jobsSection = document.querySelector('.jobs-section');
+                
+                if (newsFeed) newsFeed.classList.add('exit-animation');
+                if (infoQuick) infoQuick.classList.add('exit-animation');
+                if (jobsSection) jobsSection.classList.add('exit-animation');
+                
+                // 延迟跳转
+                setTimeout(() => {
+                    window.location.href = './profile.html';
+                }, 400);
             });
-        })();
+
+            // 页面加载时头像放大入场
+            window.addEventListener('load', () => {
+                avatar.classList.remove('leaving');
+                avatar.classList.add('entering');
+            });
+
+            // 返回此页面时头像放大入场
+            window.addEventListener('pageshow', (event) => {
+                if (event.persisted) {
+                    avatar.classList.remove('leaving');
+                    avatar.classList.add('entering');
+                }
+            });
+            // --- Log Out 按钮点击事件 ---
+            logoutBtn.addEventListener('click', function() {
+                closeSidebar();
+                showLogoutModal();
+                setTimeout(function() {
+                    hideLogoutModal();
+                }, 2000);
+                setTimeout(function() {
+                    window.location.href = '../login pages/login.html';
+                }, 2350);
+            });        })();
     </script>
 </body>
 </html>
