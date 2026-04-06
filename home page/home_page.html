@@ -236,7 +236,7 @@
             margin-top: 4rem;
             display: flex;
             flex-direction: column;
-            gap: 0.8rem;
+            gap: 0;
         }
 
         .menu-item {
@@ -252,6 +252,7 @@
             transition: background 0.3s var(--ease-smooth), color 0.3s var(--ease-smooth);
             position: relative;
             overflow: hidden;
+            text-align: right;
         }
 
         .menu-item::before {
@@ -757,7 +758,9 @@
     <div class="sidebar" id="sidebar">
         <button class="sidebar-close" id="sidebarClose">✕</button>
         <div class="sidebar-menu">
+            <button class="menu-item" id="homePageBtn">Home Page</button>
             <button class="menu-item" id="profileMenuBtn">Profile</button>
+            <button class="menu-item" id="jobMenuBtn">Job Category</button>
         </div>
         <button class="sidebar-logout-btn" id="logoutBtn">Log Out</button>
     </div>
@@ -838,6 +841,28 @@
     </div>
 
     <script>
+        // --- Welcome 弹窗 DOM ---
+        function showWelcomeModal(userName) {
+            const mask = document.createElement('div');
+            mask.id = 'welcomeModalMask';
+            mask.className = 'logout-modal-mask';
+            mask.innerHTML = `
+                <div class="logout-modal">
+                    <div class="logout-modal-text">Welcome, ${userName}! 🎉</div>
+                </div>
+            `;
+            document.body.appendChild(mask);
+            
+            setTimeout(() => {
+                if (mask.parentNode) {
+                    mask.classList.add('hiding');
+                    setTimeout(() => {
+                        if (mask.parentNode) mask.remove();
+                    }, 350);
+                }
+            }, 2000);
+        }
+
         // --- Log Out 弹窗 DOM ---
         function showLogoutModal() {
             const mask = document.createElement('div');
@@ -870,7 +895,9 @@
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('overlay');
             const sidebarClose = document.getElementById('sidebarClose');
+            const homePageBtn = document.getElementById('homePageBtn');
             const profileMenuBtn = document.getElementById('profileMenuBtn');
+            const jobMenuBtn = document.getElementById('jobMenuBtn');
             const logoutBtn = document.getElementById('logoutBtn');
             const currentTimeEl = document.getElementById('currentTime');
             const body = document.body;
@@ -884,6 +911,16 @@
             }
             updateCurrentTime();
             setInterval(updateCurrentTime, 1000);
+
+            // 检查是否从questionnaire.html跳转来，显示欢迎弹窗
+            const fromQuestionnaire = localStorage.getItem('fromQuestionnaire');
+            if (fromQuestionnaire === 'true') {
+                const userName = localStorage.getItem('userName') || 'User';
+                setTimeout(() => {
+                    showWelcomeModal(userName);
+                }, 300);
+                localStorage.removeItem('fromQuestionnaire');
+            }
 
             // 主题切换功能
             body.classList.remove('dark');
@@ -926,6 +963,34 @@
             sidebarClose.addEventListener('click', closeSidebar);
             overlay.addEventListener('click', closeSidebar);
 
+            // Home Page按钮点击事件
+            homePageBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (isAnimating) return;
+                isAnimating = true;
+                
+                // 关闭侧边栏
+                closeSidebar();
+                
+                // 头像缩小消失动画
+                avatar.classList.remove('entering');
+                avatar.classList.add('leaving');
+
+                // 三个模块的离开动画
+                const newsFeed = document.querySelector('.news-feed-section');
+                const infoQuick = document.querySelector('.info-quick-section');
+                const jobsSection = document.querySelector('.jobs-section');
+                
+                if (newsFeed) newsFeed.classList.add('exit-animation');
+                if (infoQuick) infoQuick.classList.add('exit-animation');
+                if (jobsSection) jobsSection.classList.add('exit-animation');
+                
+                // 延迟跳转
+                setTimeout(() => {
+                    window.location.href = './home_page.html';
+                }, 400);
+            });
+
             // Profile按钮点击事件
             profileMenuBtn.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -951,6 +1016,34 @@
                 // 延迟跳转
                 setTimeout(() => {
                     window.location.href = './profile.html';
+                }, 400);
+            });
+
+            // Job按钮点击事件
+            jobMenuBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (isAnimating) return;
+                isAnimating = true;
+                
+                // 关闭侧边栏
+                closeSidebar();
+                
+                // 头像缩小消失动画
+                avatar.classList.remove('entering');
+                avatar.classList.add('leaving');
+
+                // 三个模块的离开动画
+                const newsFeed = document.querySelector('.news-feed-section');
+                const infoQuick = document.querySelector('.info-quick-section');
+                const jobsSection = document.querySelector('.jobs-section');
+                
+                if (newsFeed) newsFeed.classList.add('exit-animation');
+                if (infoQuick) infoQuick.classList.add('exit-animation');
+                if (jobsSection) jobsSection.classList.add('exit-animation');
+                
+                // 延迟跳转
+                setTimeout(() => {
+                    window.location.href = './job.html';
                 }, 400);
             });
 
