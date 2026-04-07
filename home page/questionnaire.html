@@ -689,10 +689,10 @@
         <div class="questionnaire-card">
             <div class="progress-section">
                 <span class="progress-text">Neural Scan Progress</span>
-                <span class="progress-number" id="progressText">1 / 32</span>
+                <span class="progress-number" id="progressText">1 / 31</span>
             </div>
             <div class="progress-bar">
-                <div id="progress" style="width: 3.125%"></div>
+                <div id="progress" style="width: 3.225806451612903%"></div>
             </div>
 
             <form id="auditForm">
@@ -781,7 +781,6 @@
                 <h2>07. What are your elective subjects?</h2>
                 <p>Select all elective subjects you are taking or have taken.</p>
                 <div id="electiveGrid" class="grid">
-                    <label><input type="checkbox" name="elective3" value="Mathematics"><span>Mathematics</span></label>
                     <label><input type="checkbox" name="elective3" value="Physics"><span>Physics</span></label>
                     <label><input type="checkbox" name="elective3" value="Chemistry"><span>Chemistry</span></label>
                     <label><input type="checkbox" name="elective3" value="Biology"><span>Biology</span></label>
@@ -1041,27 +1040,8 @@
             </div>
 
             <div class="q-card" data-step="31">
-                <h2>31. Which job category sounds coolest to you?</h2>
-                <p>Select the industry or field that interests you the most.</p>
-                <select name="direction">
-                    <option value="">-- Please select --</option>
-                    <option value="Arch">Architecture and Construction</option>
-                    <option value="Biz">Business Management and Administration</option>
-                    <option value="Edu">Education and Learning</option>
-                    <option value="Health">Health Science</option>
-                    <option value="Tech">Information Technology</option>
-                    <option value="Law">Law and Public Safety</option>
-                    <option value="Ret">Retail, Sales and Customer Service</option>
-                    <option value="Hos">Hospitality and Tourism</option>
-                    <option value="Trans">Transportation and Logistics</option>
-                    <option value="Man">Manufacturing and Engineering</option>
-                    <option value="Art">Arts, Design and Media</option>
-                </select>
-            </div>
-
-            <div class="q-card" data-step="32">
                 <span>Part 6: The Ultimate Goal</span>
-                <h2>32. What is your exact dream job?</h2>
+                <h2>31. What is your exact dream job?</h2>
                 <p>Type it here. Don't be shy. If you want to be "CEO of Apple", "Investment Banker", or "A YouTuber making millions", write it down.</p>
                 <textarea name="dreamJob" placeholder="I want to be..."></textarea>
             </div>
@@ -1156,7 +1136,7 @@
 
         // 问卷逻辑
         let currentStep = 1;
-        const totalSteps = 32;
+        const totalSteps = 31;
         const nextBtn = document.getElementById('nextBtn');
         const prevBtn = document.getElementById('prevBtn');
         const progress = document.getElementById('progress');
@@ -1378,16 +1358,16 @@
 
         nextBtn.addEventListener('click', () => {
             if (currentStep === totalSteps) {
-                const formData = new FormData(document.getElementById('auditForm'));
-                const data = Object.fromEntries(formData.entries());
-                
-                if(!data.sys) data.sys = 'HKDSE';
-                
+                const data = collectFormData();
+                if (!data.sys) data.sys = 'HKDSE';
+
+                const recommendedCareer = computeRecommendedCareer(data);
                 localStorage.setItem('userData', JSON.stringify(data));
+                localStorage.setItem('recommendedCareer', recommendedCareer);
                 localStorage.setItem('userName', data.userName || "Agent");
                 localStorage.setItem('fromQuestionnaire', 'true');
-                
-                window.location.href = 'home_page.html';
+
+                window.location.href = 'dashboard.html';
                 return;
             }
 
@@ -1434,6 +1414,225 @@
                 nextBtn.innerText = "Next Question →";
                 nextBtn.style.backgroundColor = 'var(--btn-primary)';
             }
+        }
+
+        function collectFormData() {
+            const formData = new FormData(document.getElementById('auditForm'));
+            const data = {};
+            for (const [key, value] of formData.entries()) {
+                if (data[key]) {
+                    if (Array.isArray(data[key])) {
+                        data[key].push(value);
+                    } else {
+                        data[key] = [data[key], value];
+                    }
+                } else {
+                    data[key] = value;
+                }
+            }
+            return data;
+        }
+
+        function addScore(scores, categories, value = 1) {
+            categories.forEach(category => {
+                if (scores[category] !== undefined) {
+                    scores[category] += value;
+                }
+            });
+        }
+
+        function computeRecommendedCareer(data) {
+            const categories = {
+                'Agriculture and Natural Resources': 0,
+                'Architecture and Construction': 0,
+                'Business Management and Administration': 0,
+                'Education and Learning': 0,
+                'Health Science': 0,
+                'Information Technology': 0,
+                'Law and Public Safety': 0,
+                'Retail, Sales and Customer Service': 0,
+                'Hospitality and Tourism': 0,
+                'Transportation and Logistics': 0,
+                'Manufacturing and Engineering': 0,
+                'Arts, Design and Media': 0
+            };
+
+            const categoryMap = {
+                Arch: 'Architecture and Construction',
+                Biz: 'Business Management and Administration',
+                Edu: 'Education and Learning',
+                Health: 'Health Science',
+                IT: 'Information Technology',
+                Tech: 'Information Technology',
+                Law: 'Law and Public Safety',
+                Ret: 'Retail, Sales and Customer Service',
+                Tourism: 'Hospitality and Tourism',
+                Hos: 'Hospitality and Tourism',
+                Trans: 'Transportation and Logistics',
+                Manu: 'Manufacturing and Engineering',
+                Art: 'Arts, Design and Media'
+            };
+
+            const subjectMap = {
+                Mathematics: ['Manufacturing and Engineering', 'Information Technology', 'Transportation and Logistics', 'Architecture and Construction'],
+                Physics: ['Manufacturing and Engineering', 'Transportation and Logistics', 'Information Technology', 'Architecture and Construction'],
+                Chemistry: ['Health Science', 'Manufacturing and Engineering', 'Agriculture and Natural Resources'],
+                Biology: ['Health Science', 'Agriculture and Natural Resources'],
+                Econ: ['Business Management and Administration', 'Retail, Sales and Customer Service'],
+                BAFS: ['Business Management and Administration', 'Retail, Sales and Customer Service'],
+                ICT: ['Information Technology', 'Business Management and Administration'],
+                English: ['Education and Learning', 'Law and Public Safety', 'Business Management and Administration'],
+                Chinese: ['Education and Learning', 'Law and Public Safety'],
+                History: ['Education and Learning', 'Law and Public Safety', 'Hospitality and Tourism'],
+                Geography: ['Agriculture and Natural Resources', 'Transportation and Logistics', 'Hospitality and Tourism'],
+                VisualArts: ['Arts, Design and Media', 'Architecture and Construction'],
+                'Business Management': ['Business Management and Administration', 'Retail, Sales and Customer Service'],
+                'Digital Society': ['Information Technology', 'Business Management and Administration'],
+                'Global Politics': ['Law and Public Safety', 'Business Management and Administration'],
+                Philosophy: ['Law and Public Safety', 'Education and Learning'],
+                Psychology: ['Health Science', 'Education and Learning'],
+                'Social and Cultural Anthropology': ['Education and Learning', 'Hospitality and Tourism'],
+                'Environmental Systems and Societies': ['Agriculture and Natural Resources', 'Health Science'],
+                'Sports, Exercise and Health Science': ['Health Science', 'Hospitality and Tourism'],
+                'Design Technology': ['Architecture and Construction', 'Arts, Design and Media'],
+                'Computer Science': ['Information Technology', 'Manufacturing and Engineering'],
+                'Marine Science': ['Agriculture and Natural Resources', 'Health Science'],
+                'Travel & Tourism': ['Hospitality and Tourism', 'Retail, Sales and Customer Service'],
+                Music: ['Arts, Design and Media', 'Education and Learning'],
+                Film: ['Arts, Design and Media'],
+                Drama: ['Arts, Design and Media', 'Education and Learning'],
+                'Media Studies': ['Arts, Design and Media', 'Business Management and Administration'],
+                Law: ['Law and Public Safety']
+            };
+
+            const answerMap = {
+                env: {
+                    Office: ['Business Management and Administration', 'Law and Public Safety', 'Education and Learning'],
+                    Remote: ['Information Technology', 'Arts, Design and Media', 'Business Management and Administration'],
+                    Lab: ['Health Science', 'Manufacturing and Engineering', 'Agriculture and Natural Resources', 'Information Technology']
+                },
+                hobby: {
+                    Games: ['Information Technology', 'Arts, Design and Media'],
+                    Sports: ['Hospitality and Tourism', 'Transportation and Logistics', 'Health Science'],
+                    Create: ['Arts, Design and Media', 'Architecture and Construction', 'Information Technology']
+                },
+                motive: {
+                    Money: ['Business Management and Administration', 'Information Technology', 'Law and Public Safety', 'Manufacturing and Engineering'],
+                    Impact: ['Health Science', 'Education and Learning', 'Agriculture and Natural Resources', 'Arts, Design and Media'],
+                    Stability: ['Retail, Sales and Customer Service', 'Hospitality and Tourism', 'Transportation and Logistics', 'Law and Public Safety']
+                },
+                speak: {
+                    Love: ['Law and Public Safety', 'Education and Learning', 'Hospitality and Tourism', 'Retail, Sales and Customer Service'],
+                    Okay: ['Business Management and Administration', 'Information Technology'],
+                    Fear: ['Manufacturing and Engineering', 'Arts, Design and Media', 'Transportation and Logistics']
+                },
+                math: {
+                    Love: ['Information Technology', 'Manufacturing and Engineering', 'Transportation and Logistics', 'Architecture and Construction'],
+                    Okay: ['Business Management and Administration', 'Health Science', 'Education and Learning'],
+                    Hate: ['Education and Learning', 'Arts, Design and Media', 'Hospitality and Tourism']
+                },
+                tech: {
+                    Coder: ['Information Technology', 'Manufacturing and Engineering', 'Transportation and Logistics'],
+                    User: ['Business Management and Administration', 'Retail, Sales and Customer Service', 'Education and Learning'],
+                    Basic: ['Hospitality and Tourism', 'Agriculture and Natural Resources', 'Law and Public Safety']
+                },
+                grades: {
+                    Perfect: ['Information Technology', 'Health Science', 'Law and Public Safety', 'Architecture and Construction'],
+                    Good: ['Business Management and Administration', 'Education and Learning', 'Manufacturing and Engineering'],
+                    Average: ['Retail, Sales and Customer Service', 'Hospitality and Tourism', 'Transportation and Logistics'],
+                    Bad: ['Hospitality and Tourism', 'Retail, Sales and Customer Service', 'Arts, Design and Media']
+                },
+                risk: {
+                    High: ['Business Management and Administration', 'Information Technology', 'Law and Public Safety', 'Manufacturing and Engineering'],
+                    Low: ['Education and Learning', 'Health Science', 'Agriculture and Natural Resources']
+                },
+                focus: {
+                    Detail: ['Health Science', 'Information Technology', 'Manufacturing and Engineering', 'Architecture and Construction'],
+                    Big: ['Business Management and Administration', 'Education and Learning', 'Law and Public Safety', 'Arts, Design and Media']
+                },
+                role: {
+                    Leader: ['Business Management and Administration', 'Law and Public Safety', 'Hospitality and Tourism'],
+                    Worker: ['Manufacturing and Engineering', 'Information Technology', 'Health Science'],
+                    Checker: ['Education and Learning', 'Law and Public Safety', 'Business Management and Administration']
+                }
+            };
+
+            function addDirectionScore(key, bonus) {
+                const category = categoryMap[key];
+                if (category) {
+                    addScore(categories, [category], bonus);
+                }
+            }
+
+            if (data.direction) {
+                addDirectionScore(data.direction, 40);
+            }
+
+            if (data.dreamType) {
+                addDirectionScore(data.dreamType, 30);
+            }
+
+            ['best', 'passion'].forEach(field => {
+                const value = data[field];
+                if (value && subjectMap[value]) {
+                    addScore(categories, subjectMap[value], 12);
+                }
+            });
+
+            if (data.elective3) {
+                const electives = Array.isArray(data.elective3) ? data.elective3 : [data.elective3];
+                electives.forEach(value => {
+                    if (value && subjectMap[value]) {
+                        addScore(categories, subjectMap[value], 6);
+                    }
+                });
+            }
+
+            Object.keys(answerMap).forEach(field => {
+                const value = data[field];
+                if (value && answerMap[field][value]) {
+                    addScore(categories, answerMap[field][value], 8);
+                }
+            });
+
+            if (data.dreamJob) {
+                const text = data.dreamJob.toLowerCase();
+                if (/(design|artist|film|music|creative|fashion|media|visual)/.test(text)) {
+                    addScore(categories, ['Arts, Design and Media'], 18);
+                }
+                if (/(software|developer|programmer|coding|computer|technology|app|data|ai|machine learning)/.test(text)) {
+                    addScore(categories, ['Information Technology'], 18);
+                }
+                if (/(doctor|nurse|medical|health|clinic|pharmacy|therapy|science)/.test(text)) {
+                    addScore(categories, ['Health Science'], 18);
+                }
+                if (/(lawyer|judge|police|sheriff|detective|court|legal)/.test(text)) {
+                    addScore(categories, ['Law and Public Safety'], 18);
+                }
+                if (/(teacher|professor|educator|coach|tutor|trainer)/.test(text)) {
+                    addScore(categories, ['Education and Learning'], 18);
+                }
+                if (/(engineer|manufactur|logistic|transport|pilot|truck|mechanic|builder|construction)/.test(text)) {
+                    addScore(categories, ['Manufacturing and Engineering', 'Transportation and Logistics', 'Architecture and Construction'], 12);
+                }
+                if (/(restaurant|hotel|tourism|travel|chef|hospitality)/.test(text)) {
+                    addScore(categories, ['Hospitality and Tourism'], 18);
+                }
+                if (/(sales|marketing|business|entrepreneur)/.test(text)) {
+                    addScore(categories, ['Business Management and Administration', 'Retail, Sales and Customer Service'], 15);
+                }
+                if (/(farm|agriculture|nature|environment|ecosystem|forestry|horticulture|marine)/.test(text)) {
+                    addScore(categories, ['Agriculture and Natural Resources'], 18);
+                }
+                if (/(architect|designer|interior|urban planning|construction)/.test(text)) {
+                    addScore(categories, ['Architecture and Construction'], 18);
+                }
+            }
+
+            const sortedCategories = Object.entries(categories)
+                .sort((a, b) => b[1] - a[1] || Object.keys(categories).indexOf(a[0]) - Object.keys(categories).indexOf(b[0]));
+
+            return sortedCategories[0][0] || 'Business Management and Administration';
         }
 
         // 检查是否从登入页面跳转过来，如果是则显示欢迎弹窗
