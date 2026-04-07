@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard · HK AI INNOVATOR</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-body: linear-gradient(135deg, #f5f5f7 0%, #e8e8ed 100%);
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --text-primary: #1d1d1f;
+            --text-secondary: #575761;
+            --text-link: #0071e3;
+            --text-link-hover: #005fc4;
+            --btn-primary: #0071e3;
+            --btn-primary-hover: #0057d9;
+            --shadow-card: 0 30px 60px rgba(0, 0, 0, 0.08);
+            --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        body.dark {
+            --bg-body: linear-gradient(135deg, #202024 0%, #2a2a2e 100%);
+            --bg-card: rgba(35, 35, 38, 0.95);
+            --text-primary: #f5f5f7;
+            --text-secondary: #b0b0b8;
+            --text-link: #66b0ff;
+            --text-link-hover: #99c4ff;
+            --btn-primary: #66b0ff;
+            --btn-primary-hover: #99c4ff;
+            --shadow-card: 0 30px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            min-height: 100vh;
+            background: var(--bg-body);
+            color: var(--text-primary);
+            padding: 1.5rem;
+            transition: background 0.4s var(--ease-smooth), color 0.3s var(--ease-smooth);
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            transition: background 0.3s var(--ease-smooth), transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s var(--ease-smooth), backdrop-filter 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.6);
+            line-height: 1;
+            z-index: 1000;
+            will-change: transform, background;
+        }
+
+        body.dark .theme-toggle {
+            background: rgba(45, 45, 47, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        body.dark .theme-toggle:hover {
+            background: rgba(45, 45, 47, 0.95);
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.95);
+        }
+
+        .home-float-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 0.95rem 1.25rem;
+            border-radius: 999px;
+            border: none;
+            background: var(--btn-primary);
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 16px 36px rgba(0, 113, 227, 0.2);
+            transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
+            z-index: 1000;
+        }
+
+        .home-float-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.05);
+        }
+
+        body.dark .home-float-btn {
+            background: #66b0ff;
+        }
+
+        .dashboard-shell {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 4rem 1rem 0;
+        }
+
+        .dashboard-card {
+            background: var(--bg-card);
+            border-radius: 28px;
+            padding: 3rem;
+            box-shadow: var(--shadow-card);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(18px);
+        }
+
+        body.dark .dashboard-card {
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .dashboard-header {
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-header .label {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: var(--text-link);
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+
+        .dashboard-header h1 {
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            margin-bottom: 1rem;
+            line-height: 1.05;
+        }
+
+        .dashboard-header p {
+            color: var(--text-secondary);
+            max-width: 680px;
+            font-size: 1rem;
+            line-height: 1.75;
+        }
+
+        .result-card {
+            background: rgba(0, 113, 227, 0.06);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(0, 113, 227, 0.15);
+        }
+
+        body.dark .result-card {
+            background: rgba(102, 176, 255, 0.08);
+            border-color: rgba(102, 176, 255, 0.2);
+        }
+
+        .result-label {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-link);
+            margin-bottom: 0.8rem;
+        }
+
+        .career-name {
+            font-size: clamp(1.8rem, 3vw, 2.6rem);
+            font-weight: 800;
+            line-height: 1.05;
+            margin-bottom: 1rem;
+        }
+
+        .career-desc {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .detail-item {
+            background: rgba(255, 255, 255, 0.75);
+            padding: 1.2rem 1.4rem;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        body.dark .detail-item {
+            background: rgba(30, 30, 33, 0.9);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        .detail-item span {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .detail-item strong {
+            display: block;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .button-row button {
+            border: none;
+            padding: 1rem 1.8rem;
+            border-radius: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .button-primary {
+            background: var(--btn-primary);
+            color: white;
+            box-shadow: 0 12px 30px rgba(0, 113, 227, 0.18);
+        }
+
+        .button-secondary {
+            background: transparent;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            color: var(--text-primary);
+        }
+
+        body.dark .button-secondary {
+            border-color: rgba(255, 255, 255, 0.16);
+        }
+
+        .button-primary:hover,
+        .button-secondary:hover {
+            transform: translateY(-2px);
+        }
+
+        .review-panel {
+            visibility: hidden;
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            margin-top: 0;
+            padding: 0 1.5rem 0;
+            background: rgba(255,255,255,0.9);
+            border-radius: 24px;
+            border: 1px solid rgba(0,0,0,0.08);
+            transition: opacity 0.35s ease, max-height 0.35s ease, transform 0.35s ease, margin-top 0.35s ease, padding 0.35s ease;
+            transform: translateY(-10px);
+        }
+
+        .review-panel.open {
+            visibility: visible;
+            opacity: 1;
+            max-height: 1200px;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            transform: translateY(0);
+        }
+
+        .review-panel h2 {
+            margin-top: 0;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .review-panel.open .review-content > div {
+            animation: fadeInUp 0.3s ease forwards;
+        }
+
+        .empty-state {
+            padding: 3rem 2rem;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px dashed rgba(0, 0, 0, 0.12);
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        body.dark .empty-state {
+            background: rgba(30, 30, 33, 0.92);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        @media (max-width: 760px) {
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-card {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" id="themeToggle">🌙</button>
+    <button class="home-float-btn" id="homeFloatBtn">Let's get started!</button>
+    <main class="dashboard-shell">
+        <div class="dashboard-card" id="dashboardCard">
+            <div class="dashboard-header">
+                <div class="label">Career Dashboard</div>
+                <h1 id="dashboardTitle">Your Future Career Match</h1>
+            </div>
+
+            <div class="result-card" id="resultCard">
+                <div class="result-label">Recommended Career Category</div>
+                <div class="career-name" id="careerName">Loading…</div>
+                <p class="career-desc" id="careerDesc">Your recommendation will appear here once questionnaire data is available.</p>
+            </div>
+
+            <div class="detail-grid" id="detailGrid">
+                <div class="detail-item">
+                    <span>User Name</span>
+                    <strong id="userName">—</strong>
+                </div>
+            </div>
+
+            <div class="button-row" id="buttonRow">
+                <button class="button-primary" id="reviewBtn">Review Answers</button>
+                <button class="button-secondary" id="takeAgainBtn">Retake Questionnaire</button>
+            </div>
+
+            <div class="review-panel" id="reviewPanel">
+                <h2 style="margin-bottom:1rem; font-size:1.3rem;">Saved Questionnaire Answers</h2>
+                <div id="reviewContent" class="review-content"></div>
+            </div>
+
+            <div class="empty-state" id="emptyState" style="display:none;">
+                <p>We couldn't find completed questionnaire data yet.</p>
+                <p>Click the button below to complete the questionnaire and receive your recommended career category.</p>
+                <div style="margin-top:1.5rem; display:flex; gap:1rem; flex-wrap: wrap;">
+                    <button class="button-primary" id="startQuestionnaireBtn">Start Questionnaire</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const body = document.body;
+        const themeToggle = document.getElementById('themeToggle');
+        const careerNameEl = document.getElementById('careerName');
+        const careerDescEl = document.getElementById('careerDesc');
+        const userNameEl = document.getElementById('userName');
+        const resultCard = document.getElementById('resultCard');
+        const detailGrid = document.getElementById('detailGrid');
+        const emptyState = document.getElementById('emptyState');
+        const reviewBtn = document.getElementById('reviewBtn');
+        const reviewPanel = document.getElementById('reviewPanel');
+        const reviewContent = document.getElementById('reviewContent');
+        const takeAgainBtn = document.getElementById('takeAgainBtn');
+        const startQuestionnaireBtn = document.getElementById('startQuestionnaireBtn');
+        const homeFloatBtn = document.getElementById('homeFloatBtn');
+
+        const careerDescriptions = {
+            'Agriculture and Natural Resources': 'You are likely to thrive in roles that support food systems, ecosystems, sustainability, and natural resource management.',
+            'Architecture and Construction': 'You are well suited for designing buildings, planning spaces, and creating the physical infrastructure of tomorrow.',
+            'Business Management and Administration': 'You have a strong fit for leadership, operations, finance, and managing teams or organizations.',
+            'Education and Learning': 'You are strong in teaching, coaching, training, and helping others develop knowledge and skills.',
+            'Health Science': 'You are aligned with medicine, healthcare, wellness, medical research, and caring for people.',
+            'Information Technology': 'You are a great fit for software, systems, data, digital products, and emerging technology careers.',
+            'Law and Public Safety': 'You are suited to justice, law, public service, security, and keeping communities safe.',
+            'Retail, Sales and Customer Service': 'You are likely to succeed in sales, customer support, retail operations, and relationship-driven business roles.',
+            'Hospitality and Tourism': 'You are well matched with travel, hospitality, event service, tourism, and guest-focused experiences.',
+            'Transportation and Logistics': 'You are a strong fit for moving goods, planning routes, supply chains, and logistics management.',
+            'Manufacturing and Engineering': 'You are suited to engineering, product building, manufacturing systems, and hands-on technical work.',
+            'Arts, Design and Media': 'You are aligned with creative design, visual media, storytelling, and artistic production.'
+        };
+
+        const directionMap = {
+            Arch: 'Architecture and Construction',
+            Biz: 'Business Management and Administration',
+            Edu: 'Education and Learning',
+            Health: 'Health Science',
+            IT: 'Information Technology',
+            Tech: 'Information Technology',
+            Law: 'Law and Public Safety',
+            Ret: 'Retail, Sales and Customer Service',
+            Hos: 'Hospitality and Tourism',
+            Trans: 'Transportation and Logistics',
+            Manu: 'Manufacturing and Engineering',
+            Art: 'Arts, Design and Media'
+        };
+
+        function applyTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            if (savedTheme === 'dark') {
+                body.classList.add('dark');
+                themeToggle.innerText = '☀️';
+            } else {
+                body.classList.remove('dark');
+                themeToggle.innerText = '🌙';
+            }
+        }
+
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+            const isDark = body.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            themeToggle.innerText = isDark ? '☀️' : '🌙';
+        });
+
+        function showEmptyState() {
+            resultCard.style.display = 'none';
+            detailGrid.style.display = 'none';
+            reviewBtn.style.display = 'none';
+            takeAgainBtn.style.display = 'none';
+            reviewPanel.classList.remove('open');
+            reviewBtn.textContent = 'Review Answers';
+            emptyState.style.display = 'block';
+        }
+
+        function showResultState(career, name) {
+            careerNameEl.textContent = career;
+            careerDescEl.textContent = careerDescriptions[career] || 'This career category is a strong match based on your questionnaire answers.';
+            userNameEl.textContent = name || 'Agent';
+            resultCard.style.display = 'block';
+            detailGrid.style.display = 'grid';
+            reviewBtn.style.display = 'inline-flex';
+            reviewBtn.textContent = 'Review Answers';
+            takeAgainBtn.style.display = 'inline-flex';
+            reviewPanel.classList.remove('open');
+            emptyState.style.display = 'none';
+        }
+
+        reviewBtn.addEventListener('click', () => {
+            const isOpen = reviewPanel.classList.contains('open');
+            if (isOpen) {
+                reviewPanel.classList.remove('open');
+                reviewBtn.textContent = 'Review Answers';
+            } else {
+                reviewPanel.classList.add('open');
+                reviewBtn.textContent = 'Hide Answers';
+            }
+        });
+
+        takeAgainBtn.addEventListener('click', () => {
+            localStorage.removeItem('userData');
+            localStorage.removeItem('recommendedCareer');
+            window.location.href = 'questionnaire.html';
+        });
+
+        startQuestionnaireBtn.addEventListener('click', () => {
+            window.location.href = 'questionnaire.html';
+        });
+
+        homeFloatBtn.addEventListener('click', () => {
+            window.location.href = 'home_page.html';
+        });
+
+        const fieldLabels = {
+            userName: 'Name',
+            sys: 'School System',
+            target: 'Dream University Goal',
+            best: 'Best Subject',
+            passion: 'Loved Subject',
+            grade: 'Current Grade',
+            elective3: 'Elective Subjects',
+            grades: 'Typical Grades',
+            hours: 'Study Hours',
+            english: 'English Level',
+            math: 'Math Attitude',
+            tech: 'Tech Comfort',
+            speak: 'Public Speaking',
+            learn: 'Learning Style',
+            delay: 'Procrastination',
+            sleep: 'Sleep Hours',
+            logic: 'Problem Solving Style',
+            role: 'Team Role',
+            stress: 'Stress Level',
+            motive: 'Life Goal',
+            rules: 'Rule Preference',
+            decide: 'Decision Making',
+            focus: 'Work Focus',
+            ai: 'AI Attitude',
+            env: 'Preferred Work Environment',
+            social: 'Social Style',
+            risk: 'Risk Tolerance',
+            dreamType: 'Dream Job Field',
+            hobby: 'Hobby',
+            spend: 'Money Choice',
+            dreamJob: 'Dream Job'
+        };
+
+        function renderReviewContent(data) {
+            if (!data || typeof data !== 'object') {
+                reviewContent.innerHTML = '<p>No saved questionnaire answers available.</p>';
+                return;
+            }
+
+            const rows = Object.keys(fieldLabels).map(key => {
+                if (!(key in data) || data[key] === '') return null;
+                const value = Array.isArray(data[key]) ? data[key].join(', ') : data[key];
+                return `<div style="margin-bottom:0.85rem;"><strong style="display:block;color:var(--text-primary);margin-bottom:0.25rem;">${fieldLabels[key]}</strong><span style="color:var(--text-secondary);line-height:1.5;">${value}</span></div>`;
+            }).filter(Boolean);
+
+            reviewContent.innerHTML = rows.length ? rows.join('') : '<p>No saved questionnaire answers available.</p>';
+        }
+
+        function loadDashboard() {
+            const userName = localStorage.getItem('userName');
+            const storedCareer = localStorage.getItem('recommendedCareer');
+            const userDataRaw = localStorage.getItem('userData');
+
+            if (!userDataRaw) {
+                showEmptyState();
+                return;
+            }
+
+            let career = storedCareer;
+            let data = null;
+            if (!career) {
+                try {
+                    data = JSON.parse(userDataRaw);
+                    if (data.direction && directionMap[data.direction]) {
+                        career = directionMap[data.direction];
+                    } else if (data.dreamType && directionMap[data.dreamType]) {
+                        career = directionMap[data.dreamType];
+                    } else {
+                        career = 'Business Management and Administration';
+                    }
+                    localStorage.setItem('recommendedCareer', career);
+                } catch (error) {
+                    career = 'Business Management and Administration';
+                }
+            } else {
+                try {
+                    data = JSON.parse(userDataRaw);
+                } catch (error) {
+                    data = null;
+                }
+            }
+
+            showResultState(career, userName);
+            renderReviewContent(data);
+        }
+
+        applyTheme();
+        loadDashboard();
+    </script>
+</body>
+</html>
