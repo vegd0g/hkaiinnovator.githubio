@@ -689,10 +689,10 @@
         <div class="questionnaire-card">
             <div class="progress-section">
                 <span class="progress-text">Neural Scan Progress</span>
-                <span class="progress-number" id="progressText">1 / 33</span>
+                <span class="progress-number" id="progressText">1 / 32</span>
             </div>
             <div class="progress-bar">
-                <div id="progress" style="width: 3.03%"></div>
+                <div id="progress" style="width: 3.125%"></div>
             </div>
 
             <form id="auditForm">
@@ -711,7 +711,6 @@
                     <label><input type="radio" name="sys" value="HKDSE"> <span>HKDSE (Hong Kong System)</span></label>
                     <label><input type="radio" name="sys" value="IB"> <span>IB (International Baccalaureate)</span></label>
                     <label><input type="radio" name="sys" value="ALevel"> <span>A-Level (UK System)</span></label>
-                    <label><input type="radio" name="sys" value="AP"> <span>AP (US System) / Local</span></label>
                 </div>
             </div>
 
@@ -729,8 +728,8 @@
                 <span>Part 2: Academics</span>
                 <h2>04. Which SPECIFIC subject gets you the highest marks?</h2>
                 <p>Choose the subject where you consistently score the best.</p>
-                <select name="best">
-                    <option value="">-- Please select --</option>
+                <select id="bestSelect" name="best">
+                    <option value="Mathematics">Mathematics</option>
                     <option value="Physics">Physics</option>
                     <option value="Chemistry">Chemistry</option>
                     <option value="Biology">Biology</option>
@@ -738,6 +737,7 @@
                     <option value="BAFS">BAFS / Business Studies</option>
                     <option value="ICT">ICT / Computer Science</option>
                     <option value="English">English Language</option>
+                    <option value="Chinese">Chinese</option>
                     <option value="History">History / Chinese History</option>
                     <option value="Geography">Geography</option>
                     <option value="VisualArts">Visual Arts / Design</option>
@@ -747,8 +747,8 @@
             <div class="q-card" data-step="5">
                 <h2>05. Which SPECIFIC subject do you ACTUALLY love?</h2>
                 <p>Regardless of grades, which subject truly interests you?</p>
-                <select name="passion">
-                    <option value="">-- Please select --</option>
+                <select id="passionSelect" name="passion">
+                    <option value="Mathematics">Mathematics</option>
                     <option value="Physics">Physics</option>
                     <option value="Chemistry">Chemistry</option>
                     <option value="Biology">Biology</option>
@@ -756,6 +756,7 @@
                     <option value="BAFS">BAFS / Business Studies</option>
                     <option value="ICT">ICT / Computer Science</option>
                     <option value="English">English Language</option>
+                    <option value="Chinese">Chinese</option>
                     <option value="History">History / Chinese History</option>
                     <option value="Geography">Geography</option>
                     <option value="VisualArts">Visual Arts / Design</option>
@@ -767,6 +768,7 @@
                 <p>Select your current academic grade level.</p>
                 <select name="grade">
                     <option value="">-- Please select --</option>
+                    <option value="F1">Form 1 / Grade 7</option>
                     <option value="F2">Form 2 / Grade 8</option>
                     <option value="F3">Form 3 / Grade 9</option>
                     <option value="F4">Form 4 / Grade 10</option>
@@ -776,20 +778,10 @@
             </div>
 
             <div class="q-card" data-step="7">
-                <h2>Which education system / curriculum are you currently following?</h2>
-                <p>Identify the curriculum framework used in your school.</p>
-                <select name="curriculum">
-                    <option value="">-- Please select --</option>
-                    <option value="Alevel">GCE A-Level</option>
-                    <option value="IB">International Baccalaureate (IB)</option>
-                    <option value="Other">Other</option>
-                </select>
-            </div>
-
-            <div class="q-card" data-step="8">
-                <h2>08. What are your elective subjects?</h2>
+                <h2>07. What are your elective subjects?</h2>
                 <p>Select all elective subjects you are taking or have taken.</p>
-                <div class="grid">
+                <div id="electiveGrid" class="grid">
+                    <label><input type="checkbox" name="elective3" value="Mathematics"><span>Mathematics</span></label>
                     <label><input type="checkbox" name="elective3" value="Physics"><span>Physics</span></label>
                     <label><input type="checkbox" name="elective3" value="Chemistry"><span>Chemistry</span></label>
                     <label><input type="checkbox" name="elective3" value="Biology"><span>Biology</span></label>
@@ -811,8 +803,8 @@
                 </div>
             </div>
 
-            <div class="q-card" data-step="9">
-                <h2>09. What grades do you normally get?</h2>
+            <div class="q-card" data-step="8">
+                <h2>08. What grades do you normally get?</h2>
                 <p>Choose the grade range that best represents your typical performance.</p>
                 <div class="grid">
                     <label><input type="radio" name="grades" value="Perfect"><span>Mostly 5** / A* / Perfect Scores</span></label>
@@ -822,9 +814,9 @@
                 </div>
             </div>
 
-            <div class="q-card" data-step="10">
+            <div class="q-card" data-step="9">
                 <span>Part 3: Habits</span>
-                <h2>10. How many hours do you study after school?</h2>
+                <h2>09. How many hours do you study after school?</h2>
                 <p>Be honest about your daily study time outside of school.</p>
                 <div class="grid">
                     <label><input type="radio" name="hours" value="6+"><span>5 to 8+ Hours (I am a machine)</span></label>
@@ -834,8 +826,8 @@
                 </div>
             </div>
 
-            <div class="q-card" data-step="11">
-                <h2>11. How good is your English?</h2>
+            <div class="q-card" data-step="10">
+                <h2>10. How good is your English?</h2>
                 <p>Assess your English language proficiency level.</p>
                 <div class="grid">
                     <label><input type="radio" name="english" value="Native"><span>Native or totally fluent.</span></label>
@@ -844,8 +836,8 @@
                 </div>
             </div>
 
-            <div class="q-card" data-step="12">
-                <h2>12. How do you feel about Mathematics?</h2>
+            <div class="q-card" data-step="11">
+                <h2>11. How do you feel about Mathematics?</h2>
                 <p>Reflect on your relationship with math: love it, neutral, or struggle with it?</p>
                 <div class="grid">
                     <label><input type="radio" name="math" value="Love"><span>I love it. Numbers make sense to me.</span></label>
@@ -854,8 +846,8 @@
                 </div>
             </div>
 
-            <div class="q-card" data-step="13">
-                <h2>13. Are you good with Computers?</h2>
+            <div class="q-card" data-step="12">
+                <h2>12. Are you good with Computers?</h2>
                 <p>What is your comfort level with computers and technology?</p>
                 <div class="grid">
                     <label><input type="radio" name="tech" value="Coder"><span>Yes, I can write code (Python/C++).</span></label>
@@ -864,8 +856,8 @@
                 </div>
             </div>
 
-            <div class="q-card" data-step="14">
-                <h2>14. How do you feel about Public Speaking?</h2>
+            <div class="q-card" data-step="13">
+                <h2>13. How do you feel about Public Speaking?</h2>
                 <p>Choose the statement that best describes your feelings about public speaking.</p>
                 <div class="grid">
                     <label><input type="radio" name="speak" value="Love"><span>I love being on stage. Everyone look at me!</span></label>
@@ -874,8 +866,8 @@
                 </div>
             </div>
 
-            <div class="q-card" data-step="15">
-                <h2>15. How do you learn things the fastest?</h2>
+            <div class="q-card" data-step="14">
+                <h2>14. How do you learn things the fastest?</h2>
                 <p>Identify your preferred learning style and method.</p>
                 <div class="grid">
                     <label><input type="radio" name="learn" value="Video"><span>Watching YouTube videos.</span></label>
@@ -884,8 +876,8 @@
                 </div>
             </div>
 
-            <div class="q-card" data-step="16">
-                <h2>16. Do you delay your homework (Procrastinate)?</h2>
+            <div class="q-card" data-step="15">
+                <h2>15. Do you delay your homework (Procrastinate)?</h2>
                 <p>How often do you procrastinate on your assignments?</p>
                 <div class="grid">
                     <label><input type="radio" name="delay" value="No"><span>Never. I finish everything immediately.</span></label>
@@ -894,8 +886,8 @@
                 </div>
             </div>
 
-            <div class="q-card" data-step="17">
-                <h2>17. How much do you sleep every night?</h2>
+            <div class="q-card" data-step="16">
+                <h2>16. How much do you sleep every night?</h2>
                 <p>Select your typical average hours of sleep per night.</p>
                 <div class="grid">
                     <label><input type="radio" name="sleep" value="8+"><span>8+ hours. I need my rest.</span></label>
@@ -904,9 +896,9 @@
                 </div>
             </div>
 
-            <div class="q-card" data-step="18">
+            <div class="q-card" data-step="17">
                 <span>Part 4: Psychology</span>
-                <h2>18. When you see a very hard question, you...</h2>
+                <h2>17. When you see a very hard question, you...</h2>
                 <p>How do you typically approach challenging problems?</p>
                 <div class="grid">
                     <label><input type="radio" name="logic" value="Logic"><span>Break the problem down logically.</span></label>
@@ -915,8 +907,8 @@
                 </div>
             </div>
 
-            <div class="q-card" data-step="19">
-                <h2>19. In a team project, you are usually...</h2>
+            <div class="q-card" data-step="18">
+                <h2>18. In a team project, you are usually...</h2>
                 <p>What is your typical role when working with a group?</p>
                 <div class="grid">
                     <label><input type="radio" name="role" value="Leader"><span>The Boss. I assign tasks.</span></label>
@@ -925,8 +917,8 @@
                 </div>
             </div>
 
-            <div class="q-card" data-step="20">
-                <h2>20. How stressed are you feeling right now?</h2>
+            <div class="q-card" data-step="19">
+                <h2>19. How stressed are you feeling right now?</h2>
                 <p>Rate your current stress level honestly.</p>
                 <div class="grid">
                     <label><input type="radio" name="stress" value="Low"><span>Ice cold. No stress.</span></label>
@@ -935,8 +927,8 @@
                 </div>
             </div>
 
-            <div class="q-card" data-step="21">
-                <h2>21. What is your main goal in life?</h2>
+            <div class="q-card" data-step="20">
+                <h2>20. What is your main goal in life?</h2>
                 <p>Select what motivates you most in your life and career.</p>
                 <div class="grid">
                     <label><input type="radio" name="motive" value="Money"><span>Getting extremely rich ($1M+ per year).</span></label>
@@ -945,8 +937,8 @@
                 </div>
             </div>
 
-            <div class="q-card" data-step="22">
-                <h2>22. Do you follow the rules?</h2>
+            <div class="q-card" data-step="21">
+                <h2>21. Do you follow the rules?</h2>
                 <p>How strict are you about following rules and guidelines?</p>
                 <div class="grid">
                     <label><input type="radio" name="rules" value="Follow"><span>Yes. Rules keep us safe.</span></label>
@@ -954,8 +946,8 @@
                 </div>
             </div>
 
-            <div class="q-card" data-step="23">
-                <h2>23. How do you make big choices?</h2>
+            <div class="q-card" data-step="22">
+                <h2>22. How do you make big choices?</h2>
                 <p>Describe your decision-making style when facing important choices.</p>
                 <div class="grid">
                     <label><input type="radio" name="decide" value="Fast"><span>Very fast. I trust my gut feeling.</span></label>
@@ -963,8 +955,8 @@
                 </div>
             </div>
 
-            <div class="q-card" data-step="24">
-                <h2>24. You care more about...</h2>
+            <div class="q-card" data-step="23">
+                <h2>23. You care more about...</h2>
                 <p>What matters more to you in your work and life?</p>
                 <div class="grid">
                     <label><input type="radio" name="focus" value="Detail"><span>The small details. Must be perfect.</span></label>
@@ -972,8 +964,8 @@
                 </div>
             </div>
 
-            <div class="q-card" data-step="25">
-                <h2>25. Using ChatGPT / AI for homework is...</h2>
+            <div class="q-card" data-step="24">
+                <h2>24. Using ChatGPT / AI for homework is...</h2>
                 <p>What is your perspective on using AI tools for academic work?</p>
                 <div class="grid">
                     <label><input type="radio" name="ai" value="Tool"><span>Smart. It saves me hours.</span></label>
@@ -981,7 +973,7 @@
                 </div>
             </div>
 
-            <div class="q-card" data-step="26">
+            <div class="q-card" data-step="25">
                 <span>Part 5: Your Future</span>
                 <h2>26. Where do you want to work?</h2>
                 <p>Which work environment appeals to you most?</p>
@@ -992,8 +984,8 @@
                 </div>
             </div>
 
-            <div class="q-card" data-step="27">
-                <h2>27. Meeting strangers at a party is...</h2>
+            <div class="q-card" data-step="26">
+                <h2>26. Meeting strangers at a party is...</h2>
                 <p>How do you feel about social interaction with new people?</p>
                 <div class="grid">
                     <label><input type="radio" name="social" value="Extro"><span>Fun. I love talking.</span></label>
@@ -1001,8 +993,8 @@
                 </div>
             </div>
 
-            <div class="q-card" data-step="28">
-                <h2>28. Are you a risk-taker?</h2>
+            <div class="q-card" data-step="27">
+                <h2>27. Are you a risk-taker?</h2>
                 <p>How comfortable are you with taking risks and uncertainty?</p>
                 <div class="grid">
                     <label><input type="radio" name="risk" value="High"><span>Yes. High risk, high reward.</span></label>
@@ -1010,8 +1002,8 @@
                 </div>
             </div>
 
-            <div class="q-card" data-step="29">
-                <h2>29. What are your dream job types?</h2>
+            <div class="q-card" data-step="28">
+                <h2>28. What are your dream job types?</h2>
                 <p>Choose the career field that excites you most.</p>
                 <select name="dreamType">
                     <option value="">-- Please select --</option>
@@ -1028,8 +1020,8 @@
                 </select>
             </div>
 
-            <div class="q-card" data-step="30">
-                <h2>30. What do you do for fun?</h2>
+            <div class="q-card" data-step="29">
+                <h2>29. What do you do for fun?</h2>
                 <p>What activities do you enjoy most in your free time?</p>
                 <div class="grid">
                     <label><input type="radio" name="hobby" value="Games"><span>Video games / Movies.</span></label>
@@ -1038,8 +1030,8 @@
                 </div>
             </div>
 
-            <div class="q-card" data-step="31">
-                <h2>31. If someone gives you $10,000 today, you will...</h2>
+            <div class="q-card" data-step="30">
+                <h2>30. If someone gives you $10,000 today, you will...</h2>
                 <p>How would you handle a sudden financial windfall?</p>
                 <div class="grid">
                     <label><input type="radio" name="spend" value="Save"><span>Save it in the bank.</span></label>
@@ -1048,8 +1040,8 @@
                 </div>
             </div>
 
-            <div class="q-card" data-step="32">
-                <h2>32. Which job category sounds coolest to you?</h2>
+            <div class="q-card" data-step="31">
+                <h2>31. Which job category sounds coolest to you?</h2>
                 <p>Select the industry or field that interests you the most.</p>
                 <select name="direction">
                     <option value="">-- Please select --</option>
@@ -1067,9 +1059,9 @@
                 </select>
             </div>
 
-            <div class="q-card" data-step="33">
+            <div class="q-card" data-step="32">
                 <span>Part 6: The Ultimate Goal</span>
-                <h2>33. What is your exact dream job?</h2>
+                <h2>32. What is your exact dream job?</h2>
                 <p>Type it here. Don't be shy. If you want to be "CEO of Apple", "Investment Banker", or "A YouTuber making millions", write it down.</p>
                 <textarea name="dreamJob" placeholder="I want to be..."></textarea>
             </div>
@@ -1164,18 +1156,146 @@
 
         // 问卷逻辑
         let currentStep = 1;
-        const totalSteps = 33;
+        const totalSteps = 32;
         const nextBtn = document.getElementById('nextBtn');
         const prevBtn = document.getElementById('prevBtn');
         const progress = document.getElementById('progress');
         const progressText = document.getElementById('progressText');
+        const bestSelect = document.getElementById('bestSelect');
+        const passionSelect = document.getElementById('passionSelect');
+        const electiveGrid = document.getElementById('electiveGrid');
+
+        const originalBestOptions = Array.from(bestSelect.options).map(option => ({ value: option.value, text: option.text }));
+        const originalPassionOptions = Array.from(passionSelect.options).map(option => ({ value: option.value, text: option.text }));
+        const originalElectiveHtml = electiveGrid.innerHTML;
+
+        function renderSelectOptions(selectEl, options) {
+            selectEl.innerHTML = '<option value="">-- Please select --</option>' + options.map(opt => `<option value="${opt.value}">${opt.text}</option>`).join('');
+        }
+
+        function renderElectiveOptions(values) {
+            electiveGrid.innerHTML = values.map(value => `
+                <label><input type="checkbox" name="elective3" value="${value}"><span>${value}</span></label>
+            `).join('');
+        }
+
+        function updateSystemDependentQuestions(system) {
+            if (system === 'IB') {
+                const options = [
+                    { value: 'Language A: Literature', text: 'Language A: Literature' },
+                    { value: 'Language A: Language and Literature', text: 'Language A: Language and Literature' },
+                    { value: 'Literature and Performance', text: 'Literature and Performance' },
+                    { value: 'Classical Languages', text: 'Classical Languages' },
+                    { value: 'Language Ab Initio', text: 'Language Ab Initio' },
+                    { value: 'Language B', text: 'Language B' },
+                    { value: 'Business Management', text: 'Business Management' },
+                    { value: 'Digital Society', text: 'Digital Society' },
+                    { value: 'Economics', text: 'Economics' },
+                    { value: 'Geography', text: 'Geography' },
+                    { value: 'Global Politics', text: 'Global Politics' },
+                    { value: 'History', text: 'History' },
+                    { value: 'Philosophy', text: 'Philosophy' },
+                    { value: 'Psychology', text: 'Psychology' },
+                    { value: 'Social and Cultural Anthropology', text: 'Social and Cultural Anthropology' },
+                    { value: 'World Religions', text: 'World Religions' },
+                    { value: 'Biology', text: 'Biology' },
+                    { value: 'Chemistry', text: 'Chemistry' },
+                    { value: 'Computer Science', text: 'Computer Science' },
+                    { value: 'Design Technology', text: 'Design Technology' },
+                    { value: 'Environmental Systems and Societies', text: 'Environmental Systems and Societies' },
+                    { value: 'Physics', text: 'Physics' },
+                    { value: 'Sports, Exercise and Health Science', text: 'Sports, Exercise and Health Science' },
+                    { value: 'Mathematics: Analysis and Approaches', text: 'Mathematics: Analysis and Approaches' },
+                    { value: 'Mathematics: Applications and Interpretation', text: 'Mathematics: Applications and Interpretation' },
+                    { value: 'Dance', text: 'Dance' },
+                    { value: 'Film', text: 'Film' },
+                    { value: 'Music', text: 'Music' },
+                    { value: 'Theatre', text: 'Theatre' },
+                    { value: 'VisualArts', text: 'Visual Arts' }
+                ];
+                renderSelectOptions(bestSelect, options);
+                renderSelectOptions(passionSelect, options);
+                renderElectiveOptions(['Language A: Literature', 'Language A: Language and Literature', 'Literature and Performance', 'Classical Languages', 'Language Ab Initio', 'Language B', 'Business Management', 'Digital Society', 'Economics', 'Geography', 'Global Politics', 'History', 'Philosophy', 'Psychology', 'Social and Cultural Anthropology', 'World Religions', 'Biology', 'Chemistry', 'Computer Science', 'Design Technology', 'Environmental Systems and Societies', 'Physics', 'Sports, Exercise and Health Science', 'Mathematics: Analysis and Approaches', 'Mathematics: Applications and Interpretation', 'Dance', 'Film', 'Music', 'Theatre', 'VisualArts']);
+            } else if (system === 'ALevel') {
+                const options = [
+                    { value: 'Accounting - 9706', text: 'Accounting - 9706' },
+                    { value: 'Arabic - 9680', text: 'Arabic - 9680' },
+                    { value: 'Art & Design - 9479', text: 'Art & Design - 9479' },
+                    { value: 'Biblical Studies - 9484', text: 'Biblical Studies - 9484' },
+                    { value: 'Biology - 9700', text: 'Biology - 9700' },
+                    { value: 'Business - 9609', text: 'Business - 9609' },
+                    { value: 'Chemistry - 9701', text: 'Chemistry - 9701' },
+                    { value: 'Chinese - Language & Literature - 9868', text: 'Chinese - Language & Literature - 9868' },
+                    { value: 'Classical Studies - 9274', text: 'Classical Studies - 9274' },
+                    { value: 'Computer Science - 9618', text: 'Computer Science - 9618' },
+                    { value: 'Design & Technology - 9705', text: 'Design & Technology - 9705' },
+                    { value: 'Digital Media & Design - 9481', text: 'Digital Media & Design - 9481' },
+                    { value: 'Drama - 9482', text: 'Drama - 9482' },
+                    { value: 'Economics - 9708', text: 'Economics - 9708' },
+                    { value: 'English - Literature - 9695', text: 'English - Literature - 9695' },
+                    { value: 'English Language - 9093', text: 'English Language - 9093' },
+                    { value: 'European History - 9981', text: 'European History - 9981' },
+                    { value: 'French Language & Literature - 9898', text: 'French Language & Literature - 9898' },
+                    { value: 'Geography - 9696', text: 'Geography - 9696' },
+                    { value: 'German Language & Literature - 9897', text: 'German Language & Literature - 9897' },
+                    { value: 'Global Perspectives & Research - 9239', text: 'Global Perspectives & Research - 9239' },
+                    { value: 'Hinduism - 9487', text: 'Hinduism - 9487' },
+                    { value: 'History - 9489', text: 'History - 9489' },
+                    { value: 'Information Technology - 9626', text: 'Information Technology - 9626' },
+                    { value: 'International History - 9982', text: 'International History - 9982' },
+                    { value: 'Islamic Studies - 9488', text: 'Islamic Studies - 9488' },
+                    { value: 'Law - 9084', text: 'Law - 9084' },
+                    { value: 'Marine Science - 9693', text: 'Marine Science - 9693' },
+                    { value: 'Mathematics - 9709', text: 'Mathematics - 9709' },
+                    { value: 'Mathematics - Further - 9231', text: 'Mathematics - Further - 9231' },
+                    { value: 'Media Studies - 9607', text: 'Media Studies - 9607' },
+                    { value: 'Music - 9483', text: 'Music - 9483' },
+                    { value: 'Physics - 9702', text: 'Physics - 9702' },
+                    { value: 'Portuguese - 9718', text: 'Portuguese - 9718' },
+                    { value: 'Psychology - 9990', text: 'Psychology - 9990' },
+                    { value: 'Sociology - 9699', text: 'Sociology - 9699' },
+                    { value: 'Spanish - Language & Literature - 9844', text: 'Spanish - Language & Literature - 9844' },
+                    { value: 'Tamil - 9689', text: 'Tamil - 9689' },
+                    { value: 'Tamil - Language - 8689', text: 'Tamil - Language - 8689' },
+                    { value: 'Thinking Skills - 9694', text: 'Thinking Skills - 9694' },
+                    { value: 'Travel & Tourism - 9395', text: 'Travel & Tourism - 9395' },
+                    { value: 'Urdu - Pakistan only - 9686', text: 'Urdu - Pakistan only - 9686' },
+                    { value: 'Urdu Language & Literature - 9866', text: 'Urdu Language & Literature - 9866' },
+                    { value: 'US History since 1877 - 8102', text: 'US History since 1877 - 8102' },
+                    { value: 'US History to 1877 - 8101', text: 'US History to 1877 - 8101' }
+                ];
+                renderSelectOptions(bestSelect, options);
+                renderSelectOptions(passionSelect, options);
+                renderElectiveOptions(['Accounting - 9706', 'Arabic - 9680', 'Art & Design - 9479', 'Biblical Studies - 9484', 'Biology - 9700', 'Business - 9609', 'Chemistry - 9701', 'Chinese - Language & Literature - 9868', 'Classical Studies - 9274', 'Computer Science - 9618', 'Design & Technology - 9705', 'Digital Media & Design - 9481', 'Drama - 9482', 'Economics - 9708', 'English - Literature - 9695', 'English Language - 9093', 'European History - 9981', 'French Language & Literature - 9898', 'Geography - 9696', 'German Language & Literature - 9897', 'Global Perspectives & Research - 9239', 'Hinduism - 9487', 'History - 9489', 'Information Technology - 9626', 'International History - 9982', 'Islamic Studies - 9488', 'Law - 9084', 'Marine Science - 9693', 'Mathematics - 9709', 'Mathematics - Further - 9231', 'Media Studies - 9607', 'Music - 9483', 'Physics - 9702', 'Portuguese - 9718', 'Psychology - 9990', 'Sociology - 9699', 'Spanish - Language & Literature - 9844', 'Tamil - 9689', 'Tamil - Language - 8689', 'Thinking Skills - 9694', 'Travel & Tourism - 9395', 'Urdu - Pakistan only - 9686', 'Urdu Language & Literature - 9866', 'US History since 1877 - 8102', 'US History to 1877 - 8101']);
+            } else {
+                renderSelectOptions(bestSelect, originalBestOptions);
+                renderSelectOptions(passionSelect, originalPassionOptions);
+                electiveGrid.innerHTML = originalElectiveHtml;
+            }
+
+            bestSelect.value = '';
+            passionSelect.value = '';
+            electiveGrid.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+        }
+
+        const sysRadios = document.querySelectorAll('input[name="sys"]');
+        sysRadios.forEach(radio => {
+            radio.addEventListener('change', () => {
+                updateSystemDependentQuestions(radio.value);
+            });
+        });
+
+        const initialSystem = document.querySelector('input[name="sys"]:checked');
+        if (initialSystem) {
+            updateSystemDependentQuestions(initialSystem.value);
+        }
 
         // 验证当前题是否被回答
         function isCurrentStepAnswered() {
             const currentCard = document.querySelector(`[data-step="${currentStep}"]`);
             if (!currentCard) return true;
             
-            // 对于第33题，不需要验证
+            // 对于最后一道题，不需要验证
             if (currentStep === totalSteps) return true;
             
             // 检查text输入
