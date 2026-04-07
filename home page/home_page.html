@@ -569,10 +569,23 @@
         }
 
         .info-box {
-            padding: 0.75rem;
+            padding: 1.2rem;
             border-radius: 12px;
             background: rgba(0, 0, 0, 0.04);
             border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .current-job-opportunity {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-top: 0.5rem;
+            color: var(--text-secondary);
+            transition: color 0.25s ease, font-weight 0.25s ease;
+        }
+
+        .current-job-opportunity.filled {
+            color: var(--text-primary);
+            font-weight: 600;
         }
 
         body.dark .info-box {
@@ -581,7 +594,7 @@
         }
 
         .info-label {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-secondary);
             font-weight: 500;
             margin-bottom: 0.3rem;
@@ -798,7 +811,7 @@
             </div>
             <div class="info-box">
                 <div class="info-label">✨ Current Job Opportunity</div>
-                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">No opportunities matched yet</div>
+                <div id="currentJobOpportunity" class="current-job-opportunity">No opportunities matched yet</div>
             </div>
         </div>
 
@@ -892,6 +905,7 @@
         (function() {
             const themeToggle = document.getElementById('themeToggle');
             const avatar = document.getElementById('avatar');
+            const currentJobOpportunityEl = document.getElementById('currentJobOpportunity');
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('overlay');
             const sidebarClose = document.getElementById('sidebarClose');
@@ -943,6 +957,26 @@
                     themeToggle.textContent = '☀️';
                 }
             });
+
+            function updateCurrentJobOpportunity() {
+                if (!currentJobOpportunityEl) return;
+                let recommendedCareer = localStorage.getItem('recommendedCareer');
+                if (!recommendedCareer) {
+                    const raw = localStorage.getItem('userData');
+                    if (raw) {
+                        try {
+                            const parsed = JSON.parse(raw);
+                            recommendedCareer = parsed.recommendedCareer || parsed.direction || parsed.dreamType || null;
+                        } catch (error) {
+                            recommendedCareer = null;
+                        }
+                    }
+                }
+                currentJobOpportunityEl.textContent = recommendedCareer || 'No opportunities matched yet';
+                currentJobOpportunityEl.classList.toggle('filled', Boolean(recommendedCareer));
+            }
+
+            updateCurrentJobOpportunity();
 
             // 切换侧边栏
             avatar.addEventListener('click', () => {
