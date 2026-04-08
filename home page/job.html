@@ -178,11 +178,11 @@
         }
 
         .avatar.entering {
-            animation: avatarGrow 0.6s var(--ease-spring) forwards;
+            animation: avatarGrow 0.9s var(--ease-spring) forwards;
         }
 
         .avatar.leaving {
-            animation: avatarShrink 0.7s var(--ease-spring) forwards;
+            animation: avatarShrink 0.4s var(--ease-spring) forwards;
         }
 
         /* 侧边栏菜单 */
@@ -409,17 +409,35 @@
             background: rgba(0, 113, 227, 0.08);
             border: 1px solid rgba(0, 113, 227, 0.2);
             border-radius: 8px;
-            padding: 1.5rem;
-            text-align: center;
+            padding: 1rem;
+            text-align: left;
             font-size: 0.85rem;
             color: var(--text-secondary);
             cursor: pointer;
             transition: all 0.3s var(--ease-smooth);
-            aspect-ratio: 1 / 1;
+            aspect-ratio: 7 / 6;
             display: flex;
-            align-items: center;
-            justify-content: center;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
         }
+        
+        .job-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #237ad7;
+            text-align: left;
+            line-height: 1.1;
+            margin-bottom: 2px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        body.dark .job-title {
+            color: #66b0ff;
+        }
+        
+
         
         body.dark .job-sub-box {
             background: rgba(102, 176, 255, 0.08);
@@ -441,6 +459,15 @@
         @keyframes slideInFromBottom {
             0% { opacity: 0; transform: translateY(50px); }
             100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideOutToBottom {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(50px); }
+        }
+
+        .job-category-card.exit-animation {
+            animation: slideOutToBottom 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
 
         @media (max-width: 768px) {
@@ -518,97 +545,208 @@
             <div class="job-category-card">
                 <div class="job-category-text">Agriculture and Natural Resources</div>
                 <div class="job-sub-boxes">
-                    <div class="job-sub-box"></div>
-                    <div class="job-sub-box"></div>
-                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Environmental Consultant</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Geologist</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">(Restoration) Ecologist</div>
+                    </div>
                 </div>
             </div>
             <div class="job-category-card">
                 <div class="job-category-text">Architecture and Construction</div>
                 <div class="job-sub-boxes">
-                    <div class="job-sub-box"></div>
-                    <div class="job-sub-box"></div>
-                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Civil Engineer</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Building Services Technician</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Landscape Architect</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Bachelor Degree in Architecture or above Job</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Quantity Surveyor</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Construction Project Manager Job</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Maintenance Person</div>
+                    </div>
                 </div>
             </div>
             <div class="job-category-card">
                 <div class="job-category-text">Business Management and Administration</div>
                 <div class="job-sub-boxes">
-                    <div class="job-sub-box"></div>
-                    <div class="job-sub-box"></div>
-                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Receptionist</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Accountant</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">HR Manager</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Business Analyst</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Operations Manager</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Administrative Manager</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Investment banking analyst</div>
+                    </div>
                 </div>
             </div>
             <div class="job-category-card">
                 <div class="job-category-text">Education and Learning</div>
                 <div class="job-sub-boxes">
-                    <div class="job-sub-box"></div>
-                    <div class="job-sub-box"></div>
-                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Tutor</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Day School Teacher</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Researcher Job</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Professor</div>
+                    </div>
                 </div>
             </div>
             <div class="job-category-card">
                 <div class="job-category-text">Health Science</div>
                 <div class="job-sub-boxes">
-                    <div class="job-sub-box"></div>
-                    <div class="job-sub-box"></div>
-                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Nurse</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Physiotherapist</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Doctor / Physician</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Social Worker</div>
+                    </div>
                 </div>
             </div>
             <div class="job-category-card">
                 <div class="job-category-text">Information Technology</div>
                 <div class="job-sub-boxes">
-                    <div class="job-sub-box"></div>
-                    <div class="job-sub-box"></div>
-                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box">
+                        <div class="job-title">IT Technician</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Software engineer</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Programmer</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Data Engineer</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">AI Engineer</div>
+                    </div>
                 </div>
             </div>
             <div class="job-category-card">
                 <div class="job-category-text">Law and Public Safety</div>
                 <div class="job-sub-boxes">
-                    <div class="job-sub-box"></div>
-                    <div class="job-sub-box"></div>
-                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Lawyer / Attorney</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Legal Consultant</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Police Officer</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Police Inspector</div>
+                    </div>
                 </div>
             </div>
             <div class="job-category-card">
                 <div class="job-category-text">Retail, Sales and Customer Service</div>
                 <div class="job-sub-boxes">
-                    <div class="job-sub-box"></div>
-                    <div class="job-sub-box"></div>
-                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Retail Sales Assistant</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Customer Service Representatives Job</div>
+                    </div>
                 </div>
             </div>
             <div class="job-category-card">
                 <div class="job-category-text">Hospitality and Tourism</div>
                 <div class="job-sub-boxes">
-                    <div class="job-sub-box"></div>
-                    <div class="job-sub-box"></div>
-                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Hotel Manager</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Tour Guide</div>
+                    </div>
                 </div>
             </div>
             <div class="job-category-card">
                 <div class="job-category-text">Transportation and Logistics</div>
                 <div class="job-sub-boxes">
-                    <div class="job-sub-box"></div>
-                    <div class="job-sub-box"></div>
-                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Logistics coordinator</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Supply Chain Manager</div>
+                    </div>
                 </div>
             </div>
             <div class="job-category-card">
                 <div class="job-category-text">Manufacturing and Engineering</div>
                 <div class="job-sub-boxes">
-                    <div class="job-sub-box"></div>
-                    <div class="job-sub-box"></div>
-                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Production Engineer / Technician</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Quality Supervisor</div>
+                    </div>
                 </div>
             </div>
             <div class="job-category-card">
                 <div class="job-category-text">Arts, Design and Media</div>
                 <div class="job-sub-boxes">
-                    <div class="job-sub-box"></div>
-                    <div class="job-sub-box"></div>
-                    <div class="job-sub-box"></div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Graphic Designer</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Web Designer</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Journalists</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Artist</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Social Media Manager</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Writer</div>
+                    </div>
+                    <div class="job-sub-box">
+                        <div class="job-title">Fashion designer</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -713,6 +851,7 @@
             const jobMenuBtn = document.getElementById('jobMenuBtn');
             const logoutBtn = document.getElementById('logoutBtn');
             const body = document.body;
+            let isAnimating = false;
 
             // 主题切换功能
             body.classList.remove('dark');
@@ -758,15 +897,55 @@
             // Home Page按钮点击事件
             homePageBtn.addEventListener('click', (e) => {
                 e.preventDefault();
+                if (isAnimating) return;
+                isAnimating = true;
+                
+                // 关闭侧边栏
                 closeSidebar();
-                window.location.href = './home_page.html';
+                
+                // 头像缩小消失动画
+                avatar.classList.remove('entering');
+                avatar.classList.add('leaving');
+                
+                // 中心大框消失动画
+                const jobCards = document.querySelectorAll('.job-category-card');
+                jobCards.forEach(card => {
+                    card.classList.add('exit-animation');
+                });
+                
+                // 动画结束时立即跳转
+                const handleNavigation = () => {
+                    avatar.removeEventListener('animationend', handleNavigation);
+                    window.location.href = './home_page.html';
+                };
+                avatar.addEventListener('animationend', handleNavigation);
             });
 
             // Profile按钮点击事件
             profileMenuBtn.addEventListener('click', (e) => {
                 e.preventDefault();
+                if (isAnimating) return;
+                isAnimating = true;
+                
+                // 关闭侧边栏
                 closeSidebar();
-                window.location.href = './profile.html';
+                
+                // 头像缩小消失动画
+                avatar.classList.remove('entering');
+                avatar.classList.add('leaving');
+                
+                // 中心大框消失动画
+                const jobCards = document.querySelectorAll('.job-category-card');
+                jobCards.forEach(card => {
+                    card.classList.add('exit-animation');
+                });
+                
+                // 动画结束时立即跳转
+                const handleNavigation = () => {
+                    avatar.removeEventListener('animationend', handleNavigation);
+                    window.location.href = './profile.html';
+                };
+                avatar.addEventListener('animationend', handleNavigation);
             });
 
             // Job按钮点击事件
@@ -777,14 +956,23 @@
 
             // Log Out按钮点击事件
             logoutBtn.addEventListener('click', function() {
+                if (isAnimating) return;
+                isAnimating = true;
+                
                 closeSidebar();
                 showLogoutModal();
-                setTimeout(function() {
+                
+                // 头像动画与登出模态框同步
+                avatar.classList.remove('entering');
+                avatar.classList.add('leaving');
+                
+                // 动画结束时隐藏登出模态框并跳转
+                const handleLogout = () => {
+                    avatar.removeEventListener('animationend', handleLogout);
                     hideLogoutModal();
-                }, 2000);
-                setTimeout(function() {
                     window.location.href = '../login pages/login.html';
-                }, 2350);
+                };
+                avatar.addEventListener('animationend', handleLogout);
             });
 
             // 页面加载时头像放大入场
