@@ -1,0 +1,1741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Job Market and AI Risk Dictionary</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 浅色模式变量 (默认) */
+        :root {
+            --bg-body: linear-gradient(135deg, #f5f5f7 0%, #e8e8ed 100%);
+            --bg-card: rgba(255, 255, 255, 0.85);
+            --text-primary: #1d1d1f;
+            --text-secondary: #86868b;
+            --text-link: #0071e3;
+            --text-link-hover: #005fc4;
+            --btn-primary: #0071e3;
+            --btn-primary-hover: #0077ed;
+            --shadow-card: 0 40px 80px rgba(0, 0, 0, 0.08), 0 15px 35px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* 深色模式变量 */
+        body.dark {
+            --bg-body: linear-gradient(135deg, #202024 0%, #2a2a2e 100%);
+            --bg-card: rgba(45, 45, 47, 0.9);
+            --text-primary: #f5f5f7;
+            --text-secondary: #a1a1a8;
+            --text-link: #66b0ff;
+            --text-link-hover: #99c4ff;
+            --btn-primary: #66b0ff;
+            --btn-primary-hover: #99c4ff;
+            --shadow-card: 0 40px 80px rgba(0, 0, 0, 0.5), 0 15px 35px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-body);
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 1.5rem;
+            line-height: 1.4;
+            color: var(--text-primary);
+            transition: background 0.5s var(--ease-smooth), color 0.3s ease;
+            position: relative;
+            overflow-x: hidden;
+            opacity: 1;
+        }
+
+        /* 主题切换按钮 */
+        .theme-toggle {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            transition: background 0.3s var(--ease-smooth), transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s var(--ease-smooth);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.6);
+            line-height: 1;
+            z-index: 9999;
+            pointer-events: auto;
+        }
+
+        body.dark .theme-toggle {
+            background: rgba(45, 45, 47, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        body.dark .theme-toggle:hover {
+            background: rgba(45, 45, 47, 0.95);
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.95);
+        }
+
+        /* 返回按钮 */
+        .back-btn {
+            position: fixed;
+            top: 24px;
+            right: 100px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            transition: background 0.3s var(--ease-smooth), transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s var(--ease-smooth);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.6);
+            line-height: 1;
+            z-index: 999;
+            pointer-events: auto;
+        }
+
+        body.dark .back-btn {
+            background: rgba(45, 45, 47, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .back-btn:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        body.dark .back-btn:hover {
+            background: rgba(45, 45, 47, 0.95);
+        }
+
+        .back-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* 返回按钮动画 */
+        @keyframes backBtnGrow {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            70% {
+                transform: scale(1.12);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes backBtnShrink {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            40% {
+                transform: scale(0.08);
+            }
+            100% {
+                transform: scale(0);
+                opacity: 0;
+            }
+        }
+
+        @keyframes backBtnClick {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(0.85);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes backBtnDismiss {
+            0% {
+                transform: translateX(0) scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: translateX(20px) scale(0.9);
+            }
+            100% {
+                transform: translateX(100px) scale(0);
+                opacity: 0;
+            }
+        }
+
+        .back-btn.entering {
+            animation: backBtnGrow 0.9s var(--ease-spring) forwards;
+        }
+
+        .back-btn.leaving {
+            animation: backBtnShrink 0.4s var(--ease-spring) forwards;
+        }
+
+        .back-btn.clicked {
+            animation: backBtnClick 0.4s var(--ease-spring) forwards;
+        }
+
+        .back-btn.dismissing {
+            animation: backBtnDismiss 0.5s var(--ease-smooth) forwards;
+        }
+
+        /* 头像容器 */
+        .avatar-wrapper {
+            position: fixed;
+            top: 24px;
+            left: 24px;
+            z-index: 1000;
+        }
+
+        /* 圆形头像 */
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.85);
+            background-image: url('../profile_picture.png');
+            background-size: cover;
+            background-position: center;
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(0, 113, 227, 0.4);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: transform 0.3s var(--ease-spring), box-shadow 0.3s var(--ease-smooth), border-color 0.3s var(--ease-smooth);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.6);
+            user-select: none;
+        }
+
+        body.dark .avatar {
+            background-color: rgba(45, 45, 47, 0.8);
+            border: 2px solid rgba(102, 176, 255, 0.4);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .avatar:hover {
+            transform: scale(1.08);
+            box-shadow: 0 12px 40px rgba(0, 113, 227, 0.2), inset 0 1px 2px rgba(255, 255, 255, 0.8);
+            border-color: rgba(0, 113, 227, 0.6);
+        }
+
+        body.dark .avatar:hover {
+            box-shadow: 0 12px 40px rgba(102, 176, 255, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.15);
+            border-color: rgba(102, 176, 255, 0.6);
+        }
+
+        /* 头像动画 */
+        @keyframes avatarGrow {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            70% {
+                transform: scale(1.08);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes avatarShrink {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            40% {
+                transform: scale(0.08);
+            }
+            100% {
+                transform: scale(0);
+                opacity: 0;
+            }
+        }
+
+        .avatar.entering {
+            animation: avatarGrow 0.9s var(--ease-spring) forwards;
+        }
+
+        .avatar.leaving {
+            animation: avatarShrink 0.4s var(--ease-spring) forwards;
+        }
+
+        /* 侧边栏菜单 */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 420px;
+            height: 100vh;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px) saturate(180%);
+            padding: 2rem 0;
+            border-radius: 0 24px 24px 0;
+            box-shadow: 4px 0 16px rgba(0, 0, 0, 0.15);
+            transform: translateX(-100%);
+            transition: transform 0.4s var(--ease-spring);
+            z-index: 500;
+            overflow-y: auto;
+            clip-path: inset(0 0 0 0);
+        }
+
+        body.dark .sidebar {
+            background: rgba(45, 45, 47, 0.9);
+            box-shadow: 4px 0 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .sidebar.open {
+            transform: translateX(-120px);
+        }
+
+        .sidebar-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-primary);
+            transition: transform 0.2s var(--ease-spring);
+            padding: 0;
+        }
+
+        .sidebar-close:hover {
+            transform: scale(1.1);
+        }
+
+        .sidebar-menu {
+            margin-top: 4rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .menu-item {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(0, 0, 0, 0.12);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 8px;
+            font-size: 1.15rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s var(--ease-smooth), color 0.3s var(--ease-smooth);
+            position: relative;
+            overflow: hidden;
+            text-align: right;
+        }
+
+        .menu-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+
+        .menu-item:hover {
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text-primary);
+        }
+
+        .menu-item:hover::before {
+            opacity: 1;
+        }
+
+        body.dark .menu-item {
+            background: rgba(255, 255, 255, 0.26);
+            color: var(--text-primary);
+        }
+
+        body.dark .menu-item:hover {
+            background: rgba(255, 255, 255, 0.38);
+            color: var(--text-primary);
+        }
+
+        .sidebar-logout-btn {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 1.5rem;
+            right: 1.5rem;
+            background: var(--btn-primary);
+            color: #fff;
+            border: none;
+            border-radius: 24px;
+            padding: 0.85rem 2.2rem;
+            font-size: 1.08rem;
+            font-weight: 600;
+            box-shadow: 0 4px 16px rgba(0,113,227,0.10);
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+
+        .sidebar-logout-btn:hover {
+            background: var(--btn-primary-hover);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s var(--ease-smooth);
+            z-index: 450;
+        }
+
+        .overlay.show {
+            background: rgba(0, 0, 0, 0.3);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* 页面进出动画 */
+        @keyframes slideInFromBottom {
+            0% {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideOutToBottom {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+        }
+
+        body {
+            animation: slideInFromBottom 0.6s var(--ease-spring) forwards;
+        }
+
+        body.exit-animation {
+            animation: slideOutToBottom 0.4s var(--ease-smooth) forwards;
+        }
+
+        /* 主容器离开动画 */
+        .container {
+            transition: opacity 0.4s var(--ease-smooth);
+        }
+
+        body.exit-animation .container {
+            opacity: 0;
+        }
+
+        /* 职业卡片离开动画 */
+        /* 默认隐藏所有 sector 和 job 卡片 */
+        .sector-title,
+        .job-card {
+            display: none;
+        }
+
+        /* 显示选中的 sector 和对应的 job 卡片 */
+        .sector-title.visible,
+        .job-card.visible {
+            display: block;
+        }
+
+        .job-card {
+            transition: transform 0.3s var(--ease-smooth), opacity 0.3s var(--ease-smooth);
+        }
+
+        body.exit-animation .job-card {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+
+        /* 行业标题离开动画 */
+        .sector-title {
+            transition: transform 0.3s var(--ease-smooth), opacity 0.3s var(--ease-smooth);
+        }
+
+        body.exit-animation .sector-title {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding-top: 5rem;
+        }
+
+        /* 职业信息词典 */
+        #job-dictionary {
+            list-style: none;
+        }
+
+        /* 行业标题 */
+        .sector-title {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            padding: 1.2rem 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-left: 5px solid var(--text-link);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            border-radius: 8px;
+            box-shadow: var(--shadow-card);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        body.dark .sector-title {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* 职业卡片 */
+        .job-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow-card);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            transition: transform 0.3s var(--ease-smooth), box-shadow 0.3s var(--ease-smooth);
+            list-style: none;
+        }
+
+        body.dark .job-card {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .job-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 50px 90px rgba(0, 0, 0, 0.12), 0 20px 40px rgba(0, 0, 0, 0.06);
+        }
+
+        /* 职业标题 */
+        .job-title {
+            font-size: 1.1rem;
+            color: var(--text-link);
+            margin-top: 0;
+            margin-bottom: 0.8rem;
+            font-weight: 700;
+        }
+
+        /* 标签 */
+        .meta-label {
+            font-weight: 700;
+            color: var(--text-primary);
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+
+        /* 风险标签 */
+        .risk-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .risk-very-low {
+            background-color: rgba(52, 211, 153, 0.2);
+            color: #059669;
+        }
+
+        .risk-low {
+            background-color: rgba(96, 165, 250, 0.2);
+            color: #2563eb;
+        }
+
+        .risk-moderate {
+            background-color: rgba(250, 204, 21, 0.2);
+            color: #d97706;
+        }
+
+        .risk-high {
+            background-color: rgba(248, 113, 113, 0.2);
+            color: #dc2626;
+        }
+
+        .risk-very-high {
+            background-color: rgba(244, 63, 94, 0.2);
+            color: #e11d48;
+            border: 1px solid rgba(244, 63, 94, 0.5);
+        }
+
+        body.dark .risk-very-low {
+            background-color: rgba(52, 211, 153, 0.15);
+            color: #6ee7b7;
+        }
+
+        body.dark .risk-low {
+            background-color: rgba(96, 165, 250, 0.15);
+            color: #93c5fd;
+        }
+
+        body.dark .risk-moderate {
+            background-color: rgba(250, 204, 21, 0.15);
+            color: #fcd34d;
+        }
+
+        body.dark .risk-high {
+            background-color: rgba(248, 113, 113, 0.15);
+            color: #fca5a5;
+        }
+
+        body.dark .risk-very-high {
+            background-color: rgba(244, 63, 94, 0.15);
+            color: #f472b6;
+            border: 1px solid rgba(244, 63, 94, 0.3);
+        }
+
+        /* 文本样式 */
+        .job-card p {
+            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* 参考资源 */
+        .job-references ul {
+            list-style: none;
+            margin-left: 0;
+            margin-top: 0.5rem;
+        }
+
+        .job-references li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.2rem;
+            position: relative;
+        }
+
+        .job-references li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--text-link);
+            font-weight: 700;
+        }
+
+        .job-references a {
+            color: var(--text-link);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .job-references a:hover {
+            color: var(--text-primary);
+            text-decoration: underline;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 480px) {
+            .theme-toggle {
+                top: 16px;
+                right: 16px;
+                width: 44px;
+                height: 44px;
+                font-size: 1.3rem;
+            }
+
+            .sector-title {
+                font-size: 1.5rem;
+            }
+
+            .job-card {
+                padding: 1rem;
+            }
+
+            .job-title {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="">
+    <script>
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                document.body.classList.add('loaded');
+            });
+        } else {
+            document.body.classList.add('loaded');
+        }
+    </script>
+
+    <!-- 主题切换按钮 -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+
+    <!-- 返回按钮 -->
+    <button class="back-btn" id="backBtn" aria-label="Go back to job category">←</button>
+
+    <!-- 头像容器 -->
+    <div class="avatar-wrapper">
+        <div class="avatar" id="avatar"></div>
+    </div>
+
+    <!-- 遮罩层 -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- 侧边栏菜单 -->
+    <div class="sidebar" id="sidebar">
+        <button class="sidebar-close" id="sidebarClose">✕</button>
+        <div class="sidebar-menu">
+            <button class="menu-item" id="homePageBtn">Home Page</button>
+            <button class="menu-item" id="profileMenuBtn">Profile</button>
+            <button class="menu-item" id="jobMenuBtn">Job Category</button>
+        </div>
+        <button class="sidebar-logout-btn" id="logoutBtn">Log Out</button>
+    </div>
+
+    <!-- 主容器 -->
+    <div class="container">
+        <h1 style="text-align: center; margin-bottom: 2rem; font-size: 2rem;">Job Market & AI Risk Dictionary</h1>
+
+        <dl id="job-dictionary">
+
+    <dt class="sector-title">🌾 Agriculture and Natural Resources</dt>
+    
+    <dd class="job-card" data-sector="Agriculture and Natural Resources" data-title="Environmental Consultant" data-salary-min="25000" data-salary-max="35000" data-ai-risk="16">
+        <h3 class="job-title">Environmental Consultant</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Implement environmental management plan; Undertake different environmental measurement aspects.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">A Bachelorʼs degree programme in Environmental Studies / Environmental Engineering or related subjects from a Hong Kong higher education institution.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 25,000 - 35,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-low">16% (LOW)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.indeed.com/career-advice/finding-a-job/what-does-environmental-consultant-do" target="_blank">What Does an Environmental Consultant Do?</a></li>
+                <li><a href="https://hk.indeed.com/career-advice/finding-a-job/how-to-become-environmental-manager" target="_blank">How to Become an Environmental Manager</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Agriculture and Natural Resources" data-title="Geologist" data-salary-min="25000" data-salary-max="30000" data-ai-risk="25">
+        <h3 class="job-title">Geologist</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Responsible for logging rock and soil samples; Manage ground investigation works.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Degree in Geology / Earth Sciences or equivalent.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 25,000 - 30,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-low">25% (LOW)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.indeed.com/career-advice/finding-a-job/what-does-geologist-do" target="_blank">What Does a Geologist Do?</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Agriculture and Natural Resources" data-title="Restoration Ecologist" data-salary-min="30000" data-salary-max="40000" data-ai-risk="5">
+        <h3 class="job-title">(Restoration) Ecologist</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Plan and carry out exploratory field work and targeted seed collection.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">A bachelor's degree or equivalent in biology, plant science, ecology, conservation or equivalent in horticulture and ideally a postgraduate degree in a similar field.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 30,000 - 40,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-very-low">5% (VERY LOW)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.indeed.com/q-ecology-jobs.html" target="_blank">Ecology Jobs on Indeed HK</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dt class="sector-title">🏗️ Architecture and Construction</dt>
+
+    <dd class="job-card" data-sector="Architecture and Construction" data-title="Civil Engineer" data-salary-min="30000" data-salary-max="40000" data-ai-risk="15">
+        <h3 class="job-title">Civil Engineer</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Design civil, highway or drainage engineering projects, ensuring compliance with Hong Kong's codes of practice and standards.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Bachelor's degree or higher in Civil Engineering or a related discipline.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 30,000 - 40,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-low">15% (LOW)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.indeed.com/career-advice/finding-a-job/how-to-become-civil-engineer" target="_blank">How to Become a Civil Engineer</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Architecture and Construction" data-title="Building Services Technician" data-salary-min="30000" data-salary-max="35000" data-ai-risk="34">
+        <h3 class="job-title">Building Services Technician</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Responsible for the design of civil / building projects, including structural design, foundation design, road design, drainage system design, etc. Create relevant construction drawings, including floor plans, sections and construction details.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Degree in Building Services or Electrical or Mechanical Engineering or related disciplines.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 30,000 - 35,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-moderate">34% (MODERATE)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.indeed.com/Technical-Officer-Building-Service-jobs" target="_blank">Technical Officer Building Service Jobs on Indeed HK</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Architecture and Construction" data-title="Landscape Architect" data-salary-min="30000" data-salary-max="40000" data-ai-risk="19">
+        <h3 class="job-title">Landscape Architect</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Monitor the project design from concept design stage to project completion; Deliver architectural, façade, interior and landscape design assignments.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Bachelor Degree in Architecture or above.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 30,000 - 40,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-low">19% (LOW)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.indeed.com/q-landscape-architecture-jobs.html" target="_blank">Landscape Architecture Jobs on Indeed HK</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Architecture and Construction" data-title="Quantity Surveyor" data-salary-min="30000" data-salary-max="40000" data-ai-risk="36">
+        <h3 class="job-title">Quantity Surveyor</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Ensure correspondence and records in connection with contract receipts and payment.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Degree or above in Quantity Surveying or equivalent.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 30,000 - 40,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-moderate">36% (MODERATE)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.indeed.com/q-quantity-surveyor-jobs-in-hong-kong-jobs.html" target="_blank">Quantity Surveyor Jobs on Indeed HK</a></li>
+                <li><a href="https://occupation-dictionary.vtc.edu.hk/occupation/quantity-surveyors" target="_blank">VTC Occupation Dictionary: Quantity Surveyors</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Architecture and Construction" data-title="Construction Project Manager" data-salary-min="30000" data-salary-max="45000" data-ai-risk="1">
+        <h3 class="job-title">Construction Project Manager</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Oversee the planning, execution, and completion of construction projects, ensuring they are delivered safely, on time, within budget and to the required quality standards.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Bachelor's degree in Construction Management, Civil Engineering, Architecture or a related field.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 30,000 - 45,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-very-low">1% (VERY LOW / LOW)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.indeed.com/career-advice/finding-a-job/construction-project-manager-responsibilities" target="_blank">Construction Project Manager Responsibilities</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Architecture and Construction" data-title="Maintenance Person" data-salary-min="23000" data-salary-max="28000" data-ai-risk="52">
+        <h3 class="job-title">Maintenance Person</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Perform routine repairs, preventive maintenance, and general upkeep of buildings, equipment, and facilities to ensure they remain safe and functional.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Bachelorʼs degree in engineering or related field.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 23,000 - 28,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-moderate">52% (HIGH / MODERATE based on standard scale)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.indeed.com/q-maintenance-worker-jobs.html" target="_blank">Maintenance Worker Jobs on Indeed HK</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Architecture and Construction" data-title="Architect" data-salary-min="30000" data-salary-max="50000" data-ai-risk="23">
+        <h3 class="job-title">Architect</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Plan, design and oversee construction, balancing aesthetics, functionality, safety and budget.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Degree or above in Architecture.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 30,000 - 50,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-low">23% (LOW)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.indeed.com/career-advice/finding-a-job/what-does-architect-do" target="_blank">What Does an Architect Do?</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dt class="sector-title">💼 Business Management and Administration</dt>
+
+    <dd class="job-card" data-sector="Business Management and Administration" data-title="Receptionist" data-salary-min="18000" data-salary-max="25000" data-ai-risk="91">
+        <h3 class="job-title">Receptionist</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Receive and direct internal and external telephone calls in accordance with the firmʼs policy.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Highly motivated individual who will be able to deal effectively with conflicting requirements; Good communication skills and telephone manner; Good organisational skills.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 18,000 - 25,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-very-high">91% (VERY HIGH)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://www.indeed.com/career-advice/careers/what-does-a-receptionist-do" target="_blank">What Does a Receptionist Do?</a></li>
+                <li><a href="https://sg.indeed.com/career-advice/finding-a-job/what-is-receptionist" target="_blank">What is a Receptionist?</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Business Management and Administration" data-title="Accountant" data-salary-min="25000" data-salary-max="32000" data-ai-risk="67">
+        <h3 class="job-title">Accountant</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Assist the end-to-end accounts payable process, including invoice processing and payment disbursements; Verify and reconcile invoices against purchase orders and ensure accuracy; Conduct monthly reconciliations of bank transactions; Communicate with internal departments and vendors on payment related issues.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Higher Diploma or above in Accounting or relevant discipline.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 25,000 - 32,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-high">67% (HIGH)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="http://ambition.com.hk/blog/2021/11/how-to-prepare-yourself-for-a-career-in-accounting" target="_blank">How to Prepare Yourself for a Career in Accounting</a></li>
+                <li><a href="https://www.indeed.com/hire/job-description/accountant" target="_blank">Indeed Job Description: Accountant</a></li>
+                <li><a href="https://www.talentlist.gov.hk/en/iso5_7.html" target="_blank">Hong Kong Talent List: Accounting</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Business Management and Administration" data-title="HR Manager" data-salary-min="40000" data-salary-max="50000" data-ai-risk="41">
+        <h3 class="job-title">HR Manager</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Oversee an organization's workforce, bridging management and employee relations.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Degree in Business Administration, Human Resources Management or related disciplines.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 40,000 - 50,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-moderate">41% (MODERATE)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.indeed.com/career-advice/finding-a-job/what-does-hr-manager-do" target="_blank">What Does an HR Manager Do?</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Business Management and Administration" data-title="Business Analyst" data-salary-min="25000" data-salary-max="35000" data-ai-risk="54">
+        <h3 class="job-title">Business Analyst</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Act as a bridge between business stakeholders and technical teams, analyzing data and processes to drive improvements, efficiency and strategic goals.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Bachelor's degree in Finance, Accounting, Business Analysis or a related discipline.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 25,000 - 35,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-moderate">54% (MODERATE)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.indeed.com/career-advice/finding-a-job/what-is-a-business-analyst" target="_blank">What is a Business Analyst?</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Business Management and Administration" data-title="Operations Manager" data-salary-min="35000" data-salary-max="45000" data-ai-risk="35">
+        <h3 class="job-title">Operations Manager</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Oversee a business's day-to-day functions, enhancing efficiency, ensuring quality and managing teams across sectors like manufacturing and retail.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Experience with derivatives / structured products; A bachelorʼs degree in Business Administration, Operations Management, Supply Chain Management or Industrial Engineering or related subjects.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 35,000 - 45,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-moderate">35% (MODERATE)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://www.indeed.com/career-advice/careers/what-does-an-operations-manager-do" target="_blank">What Does an Operations Manager Do?</a></li>
+                <li><a href="https://hk.indeed.com/career-advice/finding-a-job/how-to-become-operations-manager" target="_blank">How to Become an Operations Manager</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Business Management and Administration" data-title="Administrative Manager" data-salary-min="35000" data-salary-max="45000" data-ai-risk="44">
+        <h3 class="job-title">Administrative Manager</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Assist to provide full range of administrative duties including insurance, procurement, telephone systems, security control, property maintenance, renovation & relocation, liaise with vendors & service providers on leasing terms & condition, etc. Ensure the office and service centres operate smoothly in terms of administrative support and liaise with other internal business partners.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Degree holder in Business Administration or related discipline.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 35,000 - 45,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-moderate">44% (MODERATE)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://www.indeed.com/career-advice/careers/what-does-an-administrative-manager-do" target="_blank">What Does an Administrative Manager Do?</a></li>
+                <li><a href="https://www.indeed.com/hire/job-description/administrative-manager" target="_blank">Administrative Manager Job Description</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Business Management and Administration" data-title="Investment Banking Analyst" data-salary-min="55000" data-salary-max="90000" data-ai-risk="44">
+        <h3 class="job-title">Investment Banking Analyst</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Act as intermediaries, underwriting securities and analyzing market trends to facilitate business growth. Help governments, corporations and institutions raise capital, manage complex financial transactions and provide advisory services for mergers and acquisitions (M&A) and IPOs.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Degree holder in Finance or related discipline(s); Good knowledge about the relevant market and products; Excellent analytical, market research and quantitative skills; Good interpersonal, communications and presentation skills.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 55,000 - 90,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-moderate">44% (MODERATE)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.indeed.com/career-advice/finding-a-job/how-to-become-investment-banker" target="_blank">How to Become an Investment Banker</a></li>
+                <li><a href="https://youtu.be/7fiGqxF2la4?si=TSa2ZdzmTAS_z5t3" target="_blank">YouTube Reference Video</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dt class="sector-title">🎓 Education and Learning</dt>
+
+    <dd class="job-card" data-sector="Education and Learning" data-title="Tutor" data-salary-min="20000" data-salary-max="30000" data-ai-risk="47">
+        <h3 class="job-title">Tutor</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Provide personalized academic support to individuals or small groups, aiming to improve student performance, understanding and confidence in specific subjects.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Bachelorʼs degree in a related field of the subject.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 20,000 - 30,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-moderate">47% (MODERATE)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://www.youtube.com/watch?v=0dDbaFgien0" target="_blank">YouTube Reference Video</a></li>
+                <li><a href="https://www.indeed.com/career-advice/career-development/tutoring-skills" target="_blank">Tutoring Skills (Indeed)</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Education and Learning" data-title="Day School Teacher" data-salary-min="19000" data-salary-max="28000" data-ai-risk="31">
+        <h3 class="job-title">Day School Teacher</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Provide a safe, nurturing and educational environment for young children, focusing on holistic development (cognitive, social, emotional, physical).</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Bachelorʼs degree in a related field of the subject.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 19,000 - 28,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-moderate">31% (MODERATE)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://www.edb.gov.hk/en/teacher/appointments-related/supply-teachers/index.html" target="_blank">EDB Supply Teachers Guide</a></li>
+                <li><a href="https://www.hkengage.gov.hk/en/essentials/career-business/a-guide-to-becoming-a-teacher-in-hong-kong" target="_blank">A Guide to Becoming a Teacher in Hong Kong</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Education and Learning" data-title="Researcher" data-salary-min="30000" data-salary-max="45000" data-ai-risk="28">
+        <h3 class="job-title">Researcher</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Designs studies, collects, analyzes, and interprets data to generate new knowledge or solve problems in fields like science, marketing, or academia.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Possess a PhD degree / Professional Doctorate in a relevant discipline.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 30,000 - 45,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-low">28% (LOW)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.jobsdb.com/career-advice/role/researcher/salary" target="_blank">Researcher Salary Insights (JobsDB)</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Education and Learning" data-title="Professor" data-salary-min="78000" data-salary-max="160000" data-ai-risk="25">
+        <h3 class="job-title">Professor</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">High-level academic experts at universities responsible for teaching, conducting research, securing grants, and performing administrative duties.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Possess a PhD degree / Professional Doctorate in a relevant discipline.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 78,000 - 160,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-low">25% (LOW)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://www.hro.cuhk.edu.hk/images/content/career/workingatcuhk/compensation_benefits/info_nonclinical.pdf" target="_blank">CUHK Compensation & Benefits Info</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dt class="sector-title">🩺 Health Science</dt>
+
+    <dd class="job-card" data-sector="Health Science" data-title="Nurse" data-salary-min="35000" data-salary-max="55000" data-ai-risk="15">
+        <h3 class="job-title">Nurse</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Provide direct patient care, assess vital signs, administer medications/treatments and create care plans in collaboration with physicians.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Bachelor of Nursing or Higher Diploma in Nursing from recognized local universities or the Hospital Authority nursing schools; Holder of a Hong Kong Registered Nurse license and a valid practicing certificate.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 35,000 - 55,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-low">15% (LOW)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.indeed.com/career-advice/finding-a-job/what-does-registered-nurse-do" target="_blank">What Does a Registered Nurse Do?</a></li>
+                <li><a href="https://www.nchk.org.hk/en/the_nursing_council_of_hong_kong/registration_and_enrolment_requirements/index" target="_blank">Nursing Council of Hong Kong Registration Requirements</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Health Science" data-title="Physiotherapist" data-salary-min="30000" data-salary-max="60000" data-ai-risk="12">
+        <h3 class="job-title">Physiotherapist</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Assess, diagnose, and treat patients with physical injuries, illnesses or disabilities to improve mobility and quality of life.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">University undergraduate in Physiotherapy or equivalents; Registered Physiotherapist (Part Ia/b) in Hong Kong with valid practicing certificate.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 30,000 - 60,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-low">12% (LOW)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://www.indeed.com/career-advice/careers/what-does-a-physiotherapist-do" target="_blank">What Does a Physiotherapist Do?</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Health Science" data-title="Doctor / Physician" data-salary-min="71010" data-salary-max="101775" data-ai-risk="13">
+        <h3 class="job-title">Doctor / Physician</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">University undergraduate in Physiotherapy or equivalents; Registered Physiotherapist (Part Ia/b) in Hong Kong with valid practicing certificate. (Note: Document description text duplicated in source).</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Complete a 6-year MBBS/MBChB degree from local universities (HKU/CUHK) and have a recognised medical qualification for registration in Parts I, III or V of the General Register in accordance with the Medical Registration Ordinance Cap. 161.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 71,010 - 101,775</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-low">13% (LOW)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://www.hkengage.gov.hk/en/essentials/career-business/guide-to-becoming-a-medical-practitioner-inhong-kong-steps-and-guidance" target="_blank">Guide to Becoming a Medical Practitioner in Hong Kong</a></li>
+                <li><a href="https://www3.ha.org.hk/haghprc/en-US/medical/specialRegistration" target="_blank">Hospital Authority Special Registration Details</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Health Science" data-title="Social Worker" data-salary-min="26000" data-salary-max="35000" data-ai-risk="16">
+        <h3 class="job-title">Social Worker</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Support individuals, families and communities facing personal, social or economic challenges, such as poverty, illness, abuse, to improve their well-being.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Bachelorʼs Degree in Social Work plus relevant professional qualifications or equivalent; Experience in dealing with patients with special needs is an advantage.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 26,000 - 35,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-low">16% (LOW)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.indeed.com/career-advice/finding-a-job/what-does-social-worker-do" target="_blank">What Does a Social Worker Do?</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dt class="sector-title">💻 Information Technology</dt>
+
+    <dd class="job-card" data-sector="Information Technology" data-title="IT Technician" data-salary-min="22000" data-salary-max="32000" data-ai-risk="55">
+        <h3 class="job-title">IT Technician</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Install, configure, maintain and troubleshoot an organizationʼs computer hardware, software, systems and networks.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Diploma holder in Information Technology or related discipline.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 22,000 - 32,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-moderate">55% (MODERATE)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.indeed.com/career-advice/finding-a-job/what-is-it-technician" target="_blank">What is an IT Technician?</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Information Technology" data-title="Software Engineer" data-salary-min="30000" data-salary-max="55000" data-ai-risk="41">
+        <h3 class="job-title">Software Engineer</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Design, develop, test and maintain software applications and systems by applying engineering principles to code.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">University Degree holder or above in Computer Science, Information Technology or equivalent disciplines.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 30,000 - 55,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-moderate">41% (MODERATE)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.indeed.com/career-advice/finding-a-job/what-does-a-software-engineer-do" target="_blank">What Does a Software Engineer Do?</a></li>
+                <li><a href="https://www.xccelerate.co/blog/software-engineer-hong-kong" target="_blank">Software Engineer Guide in Hong Kong</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Information Technology" data-title="Programmer" data-salary-min="20000" data-salary-max="45000" data-ai-risk="72">
+        <h3 class="job-title">Programmer</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Acquire strong skills in languages like Python, Java or JavaScript, typically demonstrated through a computer science degree, higher diploma or intensive bootcamp.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">University Degree holder or above in Computer Science, Information Technology or equivalent disciplines.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 20,000 - 45,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-high">72% (HIGH)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.indeed.com/career-advice/finding-a-job/what-do-programmers-do" target="_blank">What Do Programmers Do?</a></li>
+                <li><a href="https://hk.jobsdb.com/career-advice/role/programmer" target="_blank">Programmer Career Advice (JobsDB)</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Information Technology" data-title="Data Engineer" data-salary-min="35000" data-salary-max="60000" data-ai-risk="12">
+        <h3 class="job-title">Data Engineer</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Design, build and maintain scalable data pipelines and infrastructures to collect, transform and store raw data from various sources into usable formats.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Bachelor's degree or higher in Information Technology or other relevant disciplines and technical skills in SQL, Oracle or MySQL.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 35,000 - 60,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-low">12% (LOW)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.indeed.com/career-advice/finding-a-job/what-is-a-data-engineer" target="_blank">What is a Data Engineer?</a></li>
+                <li><a href="https://hk.jobsdb.com/career-advice/role/data-engineer" target="_blank">Data Engineer Career Paths (JobsDB)</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Information Technology" data-title="AI Engineer" data-salary-min="25000" data-salary-max="45000" data-ai-risk="2">
+        <h3 class="job-title">AI Engineer</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Develop, test and deploy AI models and systems to solve real-world business problems.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Bachelor's or Master's degree in a relevant discipline such as computer science, information technology or data science.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 25,000 - 45,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-very-low">2% (VERY LOW)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.jobsdb.com/career-advice/role/artificial-intelligence-engineer" target="_blank">Artificial Intelligence Engineer Insights</a></li>
+                <li><a href="https://datamites.com/blog/how-to-become-an-ai-engineer-in-hong-kong/" target="_blank">How to Become an AI Engineer in Hong Kong</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dt class="sector-title">⚖️ Law and Public Safety</dt>
+
+    <dd class="job-card" data-sector="Law and Public Safety" data-title="Lawyer / Attorney" data-salary-min="60000" data-salary-max="90000" data-ai-risk="28">
+        <h3 class="job-title">Lawyer / Attorney</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Advise clients, represent them in legal proceedings and draft legal documents like contracts and wills.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Bachelor of Laws (LL.B.) or above.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 60,000 - 90,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-low">28% (LOW)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.indeed.com/career-advice/finding-a-job/what-does-a-lawyer-do" target="_blank">What Does a Lawyer Do?</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Law and Public Safety" data-title="Legal Consultant" data-salary-min="50000" data-salary-max="100000" data-ai-risk="33">
+        <h3 class="job-title">Legal Consultant</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Provide expert, specialized legal advice and guidance to businesses or individuals, focusing on risk management, contract negotiation, regulatory compliance and strategic planning.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">A Bachelorʼs or Masterʼs Degree in law.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 50,000 - 100,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-moderate">33% (MODERATE)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://www.indeed.com/career-advice/finding-a-job/how-to-become-legal-consultant" target="_blank">How to Become a Legal Consultant</a></li>
+                <li><a href="https://www.doj.gov.hk/en/career/scheme.html" target="_blank">Department of Justice Career Schemes</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Law and Public Safety" data-title="Police Officer" data-salary-min="28000" data-salary-max="28000" data-ai-risk="16">
+        <h3 class="job-title">Police Officer</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Protect lives and property, maintain public order and enforce laws by patrolling areas, responding to emergency calls, conducting investigations and making arrests.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Meet academic requirements (e.g., DSE Level 2 or equivalent), pass a physical fitness test and pass the Basic Law Test.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">Starting from HKD 28,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-low">16% (LOW)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://www.police.gov.hk/ppp_en/15_recruit/pc_er.html" target="_blank">HK Police Force Recruitment Requirements</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Law and Public Safety" data-title="Police Inspector" data-salary-min="50000" data-salary-max="50000" data-ai-risk="9">
+        <h3 class="job-title">Police Inspector</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Lead police units, maintain law and order, and investigate crimes.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Possess a bachelor's degree (or equivalent) and meet strict language proficiency (Cantonese/English) and physical fitness requirements.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">Starting from HKD 50,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-very-low">9% (VERY LOW)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://www.police.gov.hk/ppp_en/15_recruit/si.html" target="_blank">HK Police Inspector Recruitment Details</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dt class="sector-title">🛍️ Retail, Sales and Customer Service</dt>
+
+    <dd class="job-card" data-sector="Retail, Sales and Customer Service" data-title="Retail Sales Assistant" data-salary-min="16000" data-salary-max="20000" data-ai-risk="71">
+        <h3 class="job-title">Retail Sales Assistant</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Work in a retail store helping provide customer service to customers.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Responsible, organised, detail-oriented and able to multitask; Friendly, approachable and professional in customer service.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 16,000 - 20,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-high">71% (HIGH)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.indeed.com/career-advice/finding-a-job/what-does-sales-assistant-do" target="_blank">What Does a Sales Assistant Do?</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Retail, Sales and Customer Service" data-title="Customer Service Representatives" data-salary-min="19000" data-salary-max="24000" data-ai-risk="76">
+        <h3 class="job-title">Customer Service Representatives</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">To handle telephone enquiries and complaints from public and tenants in a professional manner.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Good communication and interpersonal skills with good telephone manner and customer focus; Form 5 / DSE or above.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 19,000 - 24,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-high">76% (HIGH)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.jobsdb.com/career-advice/role/customer-service-representative-csr/salary" target="_blank">Customer Service Representative Salary (JobsDB)</a></li>
+                <li><a href="https://www.1823.gov.hk/en/recruitment/customer-service-officer" target="_blank">1823 Recruitment: Customer Service Officer</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dt class="sector-title">🏨 Hospitality and Tourism</dt>
+
+    <dd class="job-card" data-sector="Hospitality and Tourism" data-title="Hotel Manager" data-salary-min="20000" data-salary-max="60000" data-ai-risk="41">
+        <h3 class="job-title">Hotel Manager</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Oversee daily operations, ensuring high guest satisfaction, profitability and staff performance.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Pleasant, cheerful, customer-oriented and cooperative; Excellent interpersonal and communication skills; Good command of spoken and written English and Cantonese, with fluency in Putonghua an advantage.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 20,000 - 60,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-moderate">41% (MODERATE)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.jobsdb.com/hotel-general-manager-jobs/full-time" target="_blank">Hotel General Manager Jobs on JobsDB</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Hospitality and Tourism" data-title="Tour Guide" data-salary-min="18000" data-salary-max="25000" data-ai-risk="56">
+        <h3 class="job-title">Tour Guide</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Accompany visitors, provide commentary, safety and tailored experiences at historical, cultural or scenic sites.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Proficient in English and fluent in Cantonese (Mandarin is a plus); Confident, organised and naturally good with people; Responsible, calm under pressure and quick to problem-solve.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 18,000 - 25,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-moderate">56% (MODERATE)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://occupation-dictionary.vtc.edu.hk/occupation/tourist-guides-inbound" target="_blank">VTC Occupation Dictionary: Inbound Tourist Guides</a></li>
+                <li><a href="https://hk.indeed.com/career-advice/cvs-cover-letters/tour-guiding-skills" target="_blank">Tour Guiding Skills Checklist (Indeed)</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dt class="sector-title">📦 Transportation and Logistics</dt>
+
+    <dd class="job-card" data-sector="Transportation and Logistics" data-title="Logistics Coordinator" data-salary-min="20000" data-salary-max="25000" data-ai-risk="57">
+        <h3 class="job-title">Logistics Coordinator</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Manage a companyʼs supply chain, track inventory, coordinate shipments and liaise with carriers, suppliers and customers to ensure timely deliveries.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">College degree in Logistics or related disciplines.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 20,000 - 25,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-moderate">57% (MODERATE)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://www.haystar.com.hk/Hot-Jobs/Logistics-And-Shipping/8478" target="_blank">Haystar Hot Jobs: Logistics and Shipping</a></li>
+                <li><a href="https://sysmex.com.hk/career/logistics/" target="_blank">Sysmex Career Logistics</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Transportation and Logistics" data-title="Supply Chain Manager" data-salary-min="35000" data-salary-max="50000" data-ai-risk="39">
+        <h3 class="job-title">Supply Chain Manager</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Oversee the entire lifecycle of products, from raw material procurement to final delivery, ensuring cost efficiency, efficiency and customer satisfaction.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Bachelor's degree in Supply Chain, Logistics, Business or related disciplines.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 35,000 - 50,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-moderate">39% (MODERATE)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.jobsdb.com/career-advice/role/supply-chain-manager" target="_blank">Supply Chain Manager Career Advice (JobsDB)</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dt class="sector-title">🛠️ Manufacturing and Engineering</dt>
+
+    <dd class="job-card" data-sector="Manufacturing and Engineering" data-title="Production Engineer / Technician" data-salary-min="25000" data-salary-max="35000" data-ai-risk="38">
+        <h3 class="job-title">Production Engineer / Technician</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Optimize manufacturing processes, improve efficiency and reduce costs by designing workflows, managing production schedules and ensuring safety compliance.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Higher Diploma or above degree in Electronic, Electrical, Industrial Engineering or equivalent.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 25,000 - 35,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-moderate">38% (MODERATE)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.jobsdb.com/career-advice/role/supply-chain-manager" target="_blank">Supply Chain / Production Career paths</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Manufacturing and Engineering" data-title="Quality Supervisor" data-salary-min="20000" data-salary-max="25000" data-ai-risk="58">
+        <h3 class="job-title">Quality Supervisor</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Oversee the inspection, testing and compliance activities of products to ensure they meet company and industry standards.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Higher Diploma or above degree in Engineering, Science, Quality Management or equivalent.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 20,000 - 25,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-moderate">58% (MODERATE)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.jobsdb.com/career-advice/role/quality-supervisor" target="_blank">Quality Supervisor Career Guide (JobsDB)</a></li>
+                <li><a href="https://www.hkcaavq.edu.hk/upload/page/88/self/Four-stage_Manual_EN_20201109.pdf" target="_blank">HKCAAVQ Four-stage Quality Manual</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dt class="sector-title">🎨 Arts, Design and Media</dt>
+
+    <dd class="job-card" data-sector="Arts, Design and Media" data-title="Graphic Designer" data-salary-min="20000" data-salary-max="25000" data-ai-risk="57">
+        <h3 class="job-title">Graphic Designer</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Design and produce marketing collaterals, advertisements and event materials for print and digital use; Collaborate with editorial, marketing and multimedia teams to bring creative concepts to life.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Diploma or bachelorʼs degree in Graphic Design, Visual Communication or related discipline; Proficient in Adobe Creative Suite (InDesign, Illustrator, Photoshop); Strong sense of typography, layout and visual storytelling.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 20,000 - 25,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-moderate">57% (MODERATE)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.indeed.com/career-advice/finding-a-job/what-is-graphic-designer" target="_blank">What is a Graphic Designer?</a></li>
+                <li><a href="https://hk.jobsdb.com/career-advice/role/designer" target="_blank">Designer Role Insights (JobsDB)</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Arts, Design and Media" data-title="Web Designer" data-salary-min="20000" data-salary-max="30000" data-ai-risk="64">
+        <h3 class="job-title">Web Designer</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Develop creative design concepts for web design on layout, graphics and user interface; Keep the website updated and well maintained; Produce various designs for online campaigns.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Diploma / Degree in Web / Graphic / Multimedia Design or related disciplines; Knowledge in HTML, DIV, CSS and JavaScript; Good design sense, creativity, self-motivated spirit and independence; Experience in using Photoshop, Illustrator, Dreamweaver and Flash.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 20,000 - 30,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-high">64% (HIGH)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.indeed.com/career-advice/finding-a-job/how-to-become-web-designer" target="_blank">How to Become a Web Designer</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Arts, Design and Media" data-title="Journalists" data-salary-min="18000" data-salary-max="25000" data-ai-risk="47">
+        <h3 class="job-title">Journalists</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Research, report, write, edit and verify news stories and features for print, broadcast or digital media.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Bachelorʼs degree in journalism, communications or related fields.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 18,000 - 25,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-moderate">47% (MODERATE)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hkja.org.hk/en/category/jobs-opportunities/" target="_blank">Hong Kong Journalists Association Job Opportunities</a></li>
+                <li><a href="https://hk.indeed.com/career-advice/finding-a-job/how-to-become-journalist" target="_blank">How to Become a Journalist</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Arts, Design and Media" data-title="Artist" data-salary-min="18000" data-salary-max="18000" data-ai-risk="42">
+        <h3 class="job-title">Artist</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Create original, thought-provoking work using mediums like painting, sculpting or digital software, often focusing on aesthetics, emotions or social commentary.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Build a strong portfolio, network via local art groups and engage in exhibitions.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">Starting from HKD 18,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-moderate">42% (MODERATE)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://www.hongkongartscollective.com/post/how-to-become-an-artist-in-hong-kong" target="_blank">How to Become an Artist in Hong Kong (HK Arts Collective)</a></li>
+                <li><a href="https://hk.indeed.com/career-advice/finding-a-job/art-careers" target="_blank">Art Careers Guide (Indeed)</a></li>
+                <li><a href="https://hk.jobsdb.com/career-advice/role/artist" target="_blank">Artist Role Insights (JobsDB)</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Arts, Design and Media" data-title="Social Media Manager" data-salary-min="25000" data-salary-max="40000" data-ai-risk="34">
+        <h3 class="job-title">Social Media Manager</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Develop, implement and manage an organization's social media strategy to increase brand awareness, engagement and traffic across platforms.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Bachelorʼs degree, preference for Marketing, Communications, New Media or related fields.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">HKD 25,000 - 40,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-moderate">34% (MODERATE)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.indeed.com/career-advice/finding-a-job/how-to-become-content-writer" target="_blank">How to Become a Content Writer</a></li>
+                <li><a href="https://hk.indeed.com/career-advice/finding-a-job/how-to-become-social-media-manager" target="_blank">How to Become a Social Media Manager</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Arts, Design and Media" data-title="Writer" data-salary-min="18000" data-salary-max="18000" data-ai-risk="60">
+        <h3 class="job-title">Writer</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Write fiction or nonfiction scripts, biographies and other formats.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Practice regularly and reading widely to study different styles, techniques and vocabulary.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">Starting from HKD 18,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-moderate">60% (MODERATE)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://www.fcchk.org/correspondent/want-to-write-a-book-heres-all-you-need-to-know-about-selfpublishing-from-a-superstar-author/" target="_blank">Want to Write a Book? Self-Publishing Info (FCC HK)</a></li>
+            </ul>
+        </div>
+    </dd>
+
+    <dd class="job-card" data-sector="Arts, Design and Media" data-title="Fashion Designer" data-salary-min="20000" data-salary-max="20000" data-ai-risk="27">
+        <h3 class="job-title">Fashion Designer</h3>
+        <p><span class="meta-label">📋 Job Description:</span> <span class="job-description">Design and develop fashion collections for retail market.</span></p>
+        <p><span class="meta-label">🎓 Job Requirement:</span> <span class="job-requirement">Good technical understanding of sweater construction, gauges, knitting limitations, washing and size / fit standards; Creative with strong trend sense, yet able to design within target cost and production constraints; Detail‑oriented, organised and able to handle multiple seasons and buyers simultaneously.</span></p>
+        <p><span class="meta-label">💰 Job Salary:</span> <span class="job-salary">Starting from HKD 20,000</span></p>
+        <p><span class="meta-label">🤖 AI Replacement Risk:</span> <span class="risk-tag risk-low">27% (LOW)</span></p>
+        <div class="job-references">
+            <span class="meta-label">🔗 References:</span>
+            <ul>
+                <li><a href="https://hk.indeed.com/career-advice/finding-a-job/becoming-fashion-designer" target="_blank">Becoming a Fashion Designer</a></li>
+                <li><a href="https://occupation-dictionary.vtc.edu.hk/occupation/fashion-designers" target="_blank">VTC Occupation Dictionary: Fashion Designers</a></li>
+                <li><a href="https://www.thefashiondesigninstitute.com/hk/en/blog-career-outcomes" target="_blank">The Fashion Design Institute: Career Outcomes</a></li>
+            </ul>
+        </div>
+    </dd>
+
+</dl>
+    </div>
+
+    <script>
+        (function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const backBtn = document.getElementById('backBtn');
+            const avatar = document.getElementById('avatar');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            const sidebarClose = document.getElementById('sidebarClose');
+            const homePageBtn = document.getElementById('homePageBtn');
+            const profileMenuBtn = document.getElementById('profileMenuBtn');
+            const jobMenuBtn = document.getElementById('jobMenuBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const body = document.body;
+            let isAnimating = false;
+
+            // 获取 URL 参数中的类别名称
+            const urlParams = new URLSearchParams(window.location.search);
+            const selectedCategory = urlParams.get('category');
+            const selectedJob = urlParams.get('job');
+
+            // 显示对应的 sector 和 jobs
+            const sectorTitles = document.querySelectorAll('.sector-title');
+            const jobCards = document.querySelectorAll('.job-card');
+
+            if (selectedJob) {
+                // 如果指定了具体职位，只显示该职位和其所属的行业
+                const decodedJob = decodeURIComponent(selectedJob);
+                
+                jobCards.forEach(card => {
+                    if (card.dataset.title === decodedJob) {
+                        card.classList.add('visible');
+                        // 获取该职位的所属行业，显示对应的行业标题
+                        const jobSector = card.dataset.sector;
+                        sectorTitles.forEach(title => {
+                            const titleText = title.textContent.replace(/^[^\w]+/, '').trim();
+                            if (titleText === jobSector) {
+                                title.classList.add('visible');
+                            }
+                        });
+                    }
+                });
+            } else if (selectedCategory) {
+                // 如果指定了分类，显示该分类的所有职位和行业标题
+                const decodedCategory = decodeURIComponent(selectedCategory);
+                
+                sectorTitles.forEach(title => {
+                    const titleText = title.textContent.replace(/^[^\w]+/, '').trim();
+                    if (titleText === decodedCategory) {
+                        title.classList.add('visible');
+                    }
+                });
+
+                jobCards.forEach(card => {
+                    if (card.dataset.sector === decodedCategory) {
+                        card.classList.add('visible');
+                    }
+                });
+            } else {
+                // 如果没有参数，显示所有内容
+                sectorTitles.forEach(title => title.classList.add('visible'));
+                jobCards.forEach(card => card.classList.add('visible'));
+            }
+
+            // 页面加载动画
+            body.style.animation = 'slideInFromBottom 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards';
+
+            // 主题切换功能
+            body.classList.remove('dark');
+            themeToggle.textContent = '🌙';
+            
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                body.classList.add('dark');
+                themeToggle.textContent = '☀️';
+            }
+
+            themeToggle.addEventListener('click', () => {
+                if (body.classList.contains('dark')) {
+                    body.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                    themeToggle.textContent = '🌙';
+                } else {
+                    body.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                    themeToggle.textContent = '☀️';
+                }
+            });
+
+            // 返回按钮点击事件
+            backBtn.addEventListener('click', () => {
+                if (isAnimating) return;
+                isAnimating = true;
+                
+                avatar.classList.remove('entering');
+                avatar.classList.add('leaving');
+                backBtn.classList.remove('entering');
+                backBtn.classList.add('dismissing');
+                body.classList.add('exit-animation');
+                
+                const handleNavigation = () => {
+                    avatar.removeEventListener('animationend', handleNavigation);
+                    window.location.href = '../job.html';
+                };
+                avatar.addEventListener('animationend', handleNavigation);
+            });
+
+            // 切换侧边栏
+            avatar.addEventListener('click', () => {
+                if (sidebar.classList.contains('open')) {
+                    closeSidebar();
+                } else {
+                    sidebar.classList.add('open');
+                    overlay.classList.add('show');
+                }
+            });
+
+            // 关闭侧边栏
+            function closeSidebar() {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('show');
+            }
+
+            sidebarClose.addEventListener('click', closeSidebar);
+            overlay.addEventListener('click', closeSidebar);
+
+            // Home Page按钮点击事件
+            homePageBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (isAnimating) return;
+                isAnimating = true;
+                
+                closeSidebar();
+                
+                avatar.classList.remove('entering');
+                avatar.classList.add('leaving');
+                backBtn.classList.remove('entering');
+                backBtn.classList.add('dismissing');
+                body.classList.add('exit-animation');
+                
+                const handleNavigation = () => {
+                    avatar.removeEventListener('animationend', handleNavigation);
+                    window.location.href = '../home_page.html';
+                };
+                avatar.addEventListener('animationend', handleNavigation);
+            });
+
+            // Profile按钮点击事件
+            profileMenuBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (isAnimating) return;
+                isAnimating = true;
+                
+                closeSidebar();
+                
+                avatar.classList.remove('entering');
+                avatar.classList.add('leaving');
+                backBtn.classList.remove('entering');
+                backBtn.classList.add('dismissing');
+                body.classList.add('exit-animation');
+                
+                const handleNavigation = () => {
+                    avatar.removeEventListener('animationend', handleNavigation);
+                    window.location.href = '../profile.html';
+                };
+                avatar.addEventListener('animationend', handleNavigation);
+            });
+
+            // Job按钮点击事件
+            jobMenuBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (isAnimating) return;
+                isAnimating = true;
+                
+                closeSidebar();
+                
+                avatar.classList.remove('entering');
+                avatar.classList.add('leaving');
+                backBtn.classList.remove('entering');
+                backBtn.classList.add('dismissing');
+                body.classList.add('exit-animation');
+                
+                const handleNavigation = () => {
+                    avatar.removeEventListener('animationend', handleNavigation);
+                    window.location.href = '../job.html';
+                };
+                avatar.addEventListener('animationend', handleNavigation);
+            });
+
+            // Log Out按钮点击事件
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (isAnimating) return;
+                isAnimating = true;
+                
+                closeSidebar();
+                
+                avatar.classList.remove('entering');
+                avatar.classList.add('leaving');
+                backBtn.classList.remove('entering');
+                backBtn.classList.add('dismissing');
+                body.classList.add('exit-animation');
+                
+                const handleLogout = () => {
+                    avatar.removeEventListener('animationend', handleLogout);
+                    window.location.href = '../../login pages/login.html';
+                };
+                avatar.addEventListener('animationend', handleLogout);
+            });
+
+            // 页面加载时头像放大入场
+            window.addEventListener('load', () => {
+                avatar.classList.remove('leaving');
+                avatar.classList.add('entering');
+                backBtn.classList.remove('leaving');
+                backBtn.classList.add('entering');
+            });
+
+            // 返回此页面时头像放大入场
+            window.addEventListener('pageshow', (event) => {
+                if (event.persisted) {
+                    avatar.classList.remove('leaving');
+                    avatar.classList.add('entering');
+                    backBtn.classList.remove('leaving');
+                    backBtn.classList.add('entering');
+                }
+            });
+
+            // 页面离开时的过渡动画
+            window.addEventListener('beforeunload', () => {
+                body.classList.add('exit-animation');
+            });
+
+            // 点击链接时触发页面离开动画
+            document.addEventListener('click', (e) => {
+                const link = e.target.closest('a');
+                if (link && link.href && !link.target) {
+                    if (!link.href.startsWith('#')) {
+                        e.preventDefault();
+                        body.classList.add('exit-animation');
+                        setTimeout(() => {
+                            window.location.href = link.href;
+                        }, 400);
+                    }
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
