@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HK AI INNOVATOR</title>
+    <title>HK AI INNOVATOR - AI-Powered Career Path</title>
     <style>
         * {
             margin: 0;
@@ -12,102 +12,622 @@
             box-sizing: border-box;
         }
 
+        /* 浅色模式变量 (默认) */
         :root {
-            --bg-body: #e0e0e5;
-            --bg-card: #ffffff;
+            --bg-body: linear-gradient(135deg, #f5f5f7 0%, #e8e8ed 100%);
+            --bg-card: rgba(255, 255, 255, 0.85);
             --text-primary: #1d1d1f;
+            --text-secondary: #86868b;
             --btn-primary: #0071e3;
             --btn-primary-hover: #0077ed;
             --btn-primary-active: #005fc4;
-            --shadow-card: 0 30px 50px rgba(0, 0, 0, 0.08), 0 10px 20px rgba(0, 0, 0, 0.05);
-            --ease-spring: cubic-bezier(0.2, 1.2, 0.3, 1);
-            --ease-smooth: cubic-bezier(0.25, 0.75, 0.3, 1);
+            --shadow-card: 0 40px 80px rgba(0, 0, 0, 0.08), 0 15px 35px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* 深色模式变量 */
+        body.dark {
+            --bg-body: linear-gradient(135deg, #202024 0%, #2a2a2e 100%);
+            --bg-card: rgba(45, 45, 47, 0.9);
+            --text-primary: #f5f5f7;
+            --text-secondary: #a1a1a8;
+            --btn-primary: #66b0ff;
+            --btn-primary-hover: #99c4ff;
+            --btn-primary-active: #3385ff;
+            --shadow-card: 0 40px 80px rgba(0, 0, 0, 0.5), 0 15px 35px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.1);
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-body);
+            background-attachment: fixed;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0 1.5rem;
+            line-height: 1.4;
+            color: var(--text-primary);
+            transition: background 0.5s var(--ease-smooth), color 0.3s ease;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 主题切换按钮 */
+        .theme-toggle {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: var(--bg-body);
+            color: var(--text-primary);
+            transition: background 0.3s var(--ease-smooth), transform 0.15s var(--ease-spring), box-shadow 0.3s var(--ease-smooth);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.6);
+            line-height: 1;
+            z-index: 1000;
+            will-change: transform, background;
         }
 
-        @keyframes containerPopIn {
+        body.dark .theme-toggle {
+            background: rgba(45, 45, 47, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        body.dark .theme-toggle:hover {
+            background: rgba(45, 45, 47, 0.95);
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.95);
+        }
+
+        /* 页面弹入动画 */
+        @keyframes fadeInUp {
             0% {
                 opacity: 0;
-                transform: scale(0.96);
+                transform: translateY(30px);
             }
             100% {
                 opacity: 1;
-                transform: scale(1);
+                transform: translateY(0);
             }
         }
 
-        .home-container {
-            background-color: var(--bg-card);
-            padding: 2.2rem 2.4rem;
-            border-radius: 28px;
-            box-shadow: var(--shadow-card);
+        /* 主容器 - 占满视口高度 */
+        .main-wrapper {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 英雄区域 - 占满首屏 */
+        .hero-section {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             text-align: center;
-            transition: opacity 0.5s var(--ease-smooth), transform 0.6s var(--ease-spring);
-            will-change: opacity, transform;
-            animation: containerPopIn 0.6s var(--ease-spring);
+            padding: 2rem 0;
+            animation: fadeInUp 0.7s var(--ease-smooth);
+            flex-shrink: 0;
         }
 
-        .home-container.page-exit {
-            opacity: 0;
-            transform: scale(0.97);
-            pointer-events: none;
-        }
-
-        .hero-title {
-            font-size: 1.4rem;
+        /* 小标题 */
+        .hero-subtitle {
+            font-size: 0.95rem;
             font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 1.6rem;
-            line-height: 1.4;
-            max-width: 420px;
+            color: var(--text-secondary);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            opacity: 0.9;
         }
 
-        .login-button {
-            padding: 0.9rem 2.4rem;
+        /* 大标题 */
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 3rem;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.2rem;
+            }
+        }
+
+        /* 按钮组容器 */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            max-width: 500px;
+            margin: 0 auto;
+            width: 100%;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* 按钮样式 */
+        .btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--btn-primary) 0%, var(--btn-primary-hover) 100%);
+            color: white;
             border: none;
             border-radius: 40px;
-            background-color: var(--btn-primary);
-            color: #ffffff;
             font-size: 1.05rem;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.15s ease, background-color 0.2s ease;
+            transition: transform 0.3s var(--ease-spring), box-shadow 0.3s var(--ease-smooth);
+            box-shadow: 0 8px 24px rgba(0, 113, 227, 0.25);
+            position: relative;
+            overflow: hidden;
         }
 
-        .login-button:hover {
-            background-color: var(--btn-primary-hover);
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
+            border-radius: 40px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
-        .login-button:active {
-            transform: scale(0.98);
-            background-color: var(--btn-primary-active);
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(0, 113, 227, 0.35);
+        }
+
+        .btn:hover::before {
+            opacity: 1;
+        }
+
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 12px rgba(0, 113, 227, 0.2);
+        }
+
+        body.dark .btn {
+            box-shadow: 0 8px 24px rgba(102, 176, 255, 0.3);
+        }
+
+        body.dark .btn:hover {
+            box-shadow: 0 12px 32px rgba(102, 176, 255, 0.4);
+        }
+
+        /* 简介容器 - 屏幕下方 */
+        .info-section {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            padding: 4rem 2rem 2rem;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(60px);
+            transition: opacity 0.4s var(--ease-smooth), visibility 0.4s var(--ease-smooth), transform 0.4s var(--ease-smooth);
+        }
+
+        .info-section.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* 信息部分向上消失 */
+        .info-section.exit {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-60px);
+        }
+
+        @media (max-width: 768px) {
+            .info-section {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        /* 简介卡片 */
+        .info-card {
+            background-color: var(--bg-card);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            box-shadow: var(--shadow-card);
+            transition: opacity 0.6s var(--ease-smooth), transform 0.6s var(--ease-smooth), box-shadow 0.3s var(--ease-smooth);
+            opacity: 0;
+            transform: translateY(30px);
+            visibility: hidden;
+        }
+
+        .info-section.visible .info-card {
+            opacity: 1;
+            transform: translateY(0);
+            visibility: visible;
+        }
+
+        /* 第二个卡片延迟进入 */
+        .info-card:nth-child(2) {
+            transition-delay: 0.2s;
+        }
+
+        .info-section.visible .info-card:nth-child(2) {
+            transition-delay: 0.2s;
+        }
+
+        @media (max-width: 768px) {
+            .info-card {
+                padding: 2rem 1.5rem;
+            }
+        }
+
+        body.dark .info-card {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .info-section.visible .info-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        body.dark .info-section.visible .info-card:hover {
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .info-card h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            line-height: 1.3;
+        }
+
+        .info-card p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .info-card p:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info-card li {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 1rem;
+            padding-left: 1.8rem;
+            position: relative;
+        }
+
+        .info-card li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--btn-primary);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        body.dark .info-card li::before {
+            color: #66b0ff;
+        }
+
+        /* CTA 容器 */
+        .cta-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 3rem 2rem 2rem;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(60px);
+            transition: opacity 0.4s var(--ease-smooth), visibility 0.4s var(--ease-smooth), transform 0.4s var(--ease-smooth);
+            flex-wrap: wrap;
+        }
+
+        .info-section.visible ~ .cta-section {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            transition: opacity 0.4s var(--ease-smooth), visibility 0.4s var(--ease-smooth), transform 0.4s var(--ease-smooth);
+        }
+
+        /* CTA 部分向上消失 */
+        .cta-section.exit {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-60px);
+        }
+
+        .cta-text {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* CTA 链接 - 模仿 skip 按钮样式 */
+        .cta-link {
+            background: none;
+            border: none;
+            color: #0071e3;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 0;
+            transition: color 0.25s var(--ease-smooth), transform 0.25s var(--ease-spring);
+            display: inline-block;
+            position: relative;
+            font-family: inherit;
+        }
+
+        .cta-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: #0071e3;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.25s var(--ease-spring);
+        }
+
+        .cta-link:hover {
+            color: #005fc4;
+            transform: translateY(-1px);
+        }
+
+        .cta-link:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        body.dark .cta-link {
+            color: #66b0ff;
+        }
+
+        body.dark .cta-link:hover {
+            color: #99c4ff;
+        }
+
+        body.dark .cta-link::after {
+            background-color: #66b0ff;
+        }
+
+        /* CTA 部分消失动画 */
+        .cta-section {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(60px);
+            transition: opacity 0.6s var(--ease-smooth) 0.4s, visibility 0.6s var(--ease-smooth) 0.4s, transform 0.6s var(--ease-smooth) 0.4s;
+        }
+
+        .cta-section.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            transition: opacity 0.6s var(--ease-smooth), visibility 0.6s var(--ease-smooth), transform 0.6s var(--ease-smooth);
+        }
+
+        /* 页面退出动画 */
+        @keyframes scaleAndFadeOut {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            25% {
+                opacity: 0.95;
+                transform: scale(1.08);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.85);
+            }
+        }
+
+        body.page-exit .hero-section {
+            animation: scaleAndFadeOut 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
     </style>
 </head>
 <body>
-    <div class="home-container" id="homeContainer">
-        <h1 class="hero-title">看到这页的是gay</h1>
-        <button class="login-button" id="loginButton" type="button">Log in</button>
+    <!-- 主题切换按钮 -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+
+    <div class="main-wrapper">
+        <!-- 英雄区域 - 屏幕中央 -->
+        <div class="hero-section">
+            <div class="hero-subtitle">Hong Kong AI Innovator</div>
+            <h1 class="hero-title">AI-Powered Career Path</h1>
+            
+            <div class="button-group">
+                <button class="btn" id="loginButton">Log in</button>
+                <button class="btn" id="createAccountButton">Create Account</button>
+            </div>
+        </div>
+
+        <!-- 简介区域 - 屏幕下方，默认隐藏 -->
+        <div class="info-section">
+            <!-- Why Do We Design This Website -->
+            <div class="info-card">
+                <h3>Why Do We Design This Website?</h3>
+                <p>We built this platform to solve the immediate confusion facing Hong Kong's youth:</p>
+                <ul>
+                    <li><strong>To bridge the information gap:</strong> Students understand exam scores but have no real insight into what day-to-day careers actually look like.</li>
+                    <li><strong>To provide a "mirror":</strong> To help students uncover their hidden talents and translate personal strengths into actionable career paths.</li>
+                    <li><strong>To centralize resources:</strong> To replace fragmented forums and outdated brochures with a single, reliable ecosystem.</li>
+                </ul>
+            </div>
+
+            <!-- Why Should We Design This Website -->
+            <div class="info-card">
+                <h3>The Aim Of Designing This Website</h3>
+                <p>We must build this platform because the long-term impact on Hong Kong's future is critical:</p>
+                <ul>
+                    <li><strong>Clear Vision for Students:</strong> We aim to empower secondary school students with a clear, actionable vision of their future career direction.</li>
+                    <li><strong>Bridging the Guidance Gap:</strong> Our platform is dedicated to filling the void in effective career planning tools for Hong Kong students</li>
+                    <li><strong>Making Future Planning Possible:</strong> By providing a comprehensive, personalized and free solution, we are making it possible for every Hong Kong student to plan a successful future.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- CTA 区域 -->
+        <div class="cta-section">
+            <span class="cta-text">Interested?</span>
+            <button class="cta-link" id="ctaCreateButton">Create your own account!</button>
+        </div>
     </div>
+
     <script>
         (function() {
             const loginButton = document.getElementById('loginButton');
-            const homeContainer = document.getElementById('homeContainer');
+            const createAccountButton = document.getElementById('createAccountButton');
+            const ctaCreateButton = document.getElementById('ctaCreateButton');
+            const themeToggle = document.getElementById('themeToggle');
+            const body = document.body;
+            const infoSection = document.querySelector('.info-section');
+            let isAnimating = false;
 
-            loginButton.addEventListener('click', () => {
-                homeContainer.classList.add('page-exit');
-                setTimeout(() => {
-                    window.location.href = 'login pages/login.html';
-                }, 550);
+            // --- 主题切换 ---
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            if (savedTheme === 'dark') {
+                body.classList.add('dark');
+                themeToggle.textContent = '☀️';
+            } else {
+                body.classList.remove('dark');
+                themeToggle.textContent = '🌙';
+            }
+
+            themeToggle.addEventListener('click', function() {
+                if (body.classList.contains('dark')) {
+                    body.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                    themeToggle.textContent = '🌙';
+                } else {
+                    body.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                    themeToggle.textContent = '☀️';
+                }
             });
+
+            // --- 登入和注册按钮 ---
+            function startExitAnimation(url) {
+                if (isAnimating) return;
+                if (!url || url === '#') return;
+
+                isAnimating = true;
+                body.classList.add('page-exit');
+                
+                // 触发问题卡片和 CTA 的消失动画
+                infoSection.classList.add('exit');
+                const ctaSection = document.querySelector('.cta-section');
+                if (ctaSection) {
+                    ctaSection.classList.add('exit');
+                }
+
+                setTimeout(() => {
+                    window.location.href = url;
+                }, 500);
+            }
+
+            if (loginButton) {
+                loginButton.addEventListener('click', () => {
+                    startExitAnimation('login pages/login.html');
+                });
+            }
+
+            if (createAccountButton) {
+                createAccountButton.addEventListener('click', () => {
+                    startExitAnimation('login pages/create_account.html');
+                });
+            }
+
+            if (ctaCreateButton) {
+                ctaCreateButton.addEventListener('click', () => {
+                    if (isAnimating) return;
+                    isAnimating = true;
+
+                    // 添加 exit class，使卡片向上消失
+                    infoSection.classList.add('exit');
+                    const ctaSection = document.querySelector('.cta-section');
+                    if (ctaSection) {
+                        ctaSection.classList.add('exit');
+                    }
+
+                    // 等待消失动画完成后跳转（0.4s 动画 + 100ms 缓冲）
+                    setTimeout(() => {
+                        window.location.href = 'login pages/create_account.html';
+                    }, 500);
+                });
+            }
+
+            // 返回时恢复页面
+            window.addEventListener('pageshow', function(event) {
+                if (event.persisted) {
+                    body.classList.remove('page-exit');
+                    isAnimating = false;
+                }
+            });
+
+            // --- 滚动时显示/隐藏简介 ---
+            const observerOptions = {
+                threshold: 0.05,
+                rootMargin: '0px 0px -100px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    } else {
+                        entry.target.classList.remove('visible');
+                    }
+                });
+            }, observerOptions);
+
+            if (infoSection) {
+                observer.observe(infoSection);
+            }
         })();
     </script>
 </body>
